@@ -1,0 +1,77 @@
+using System;
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public float rotateSpeed = 5.0f; // Speed at which the weapon will rotate towards the target
+    [SerializeField] private Rigidbody2D weaponRigidBody;
+    [SerializeField] private Transform weaponPivot;
+    private FixedJoint2D joint;
+    private PlayerMovement movement;
+    private Rigidbody2D rb;
+    private Health health;
+    public bool IsDead => health.IsDead;
+    public int Level { get; private set; }
+    public int XP { get; private set; }
+    public int MaxXP => 100;
+
+    void Start()
+    {
+        // Get references to components
+        rb = GetComponent<Rigidbody2D>();
+        movement = GetComponent<PlayerMovement>();
+        health = GetComponent<Health>();
+        GameManager.Instance.RegisterPlayer(gameObject);
+    }
+
+    void FixedUpdate()
+    {
+        // Check if the player is dead
+        if (IsDead)
+        {
+            return;
+        }
+        movement.MovePlayer();
+        PivotWeapon();
+    }
+
+    void PivotWeapon() 
+    {
+        // Get mouse position in world coordinates
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0; // Ensure we stay in 2D
+        // Get direction from player to mouse
+        Vector2 direction = (mousePos - weaponPivot.position).normalized;
+        // Calculate the angle between the player and the mouse position
+        float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // Smoothly rotate the weapon using Rigidbody2D
+        float currentAngle = weaponRigidBody.rotation;
+        float newAngle = Mathf.LerpAngle(currentAngle, targetAngle, rotateSpeed * Time.fixedDeltaTime);
+        // Debug.Log(Mathf.Abs(newAngle - currentAngle) < 0.1f);
+        // Apply the new rotation using Rigidbody2D.MoveRotation
+        weaponRigidBody.MoveRotation(newAngle);
+    }
+
+    public void AddXP(int xp)
+    {
+        // Add the xp to the player's current xp
+        XP += xp;
+        // Check if the player has enough xp to level up
+        if (XP >= 100)
+        {
+            // If the player has enough xp, level up the player
+            LevelUp();
+        }
+
+    }
+
+    private void LevelUp()
+    {
+        // Increase the player's level by 1
+        Level++;
+        // Reset the player's xp to 0
+        XP = 0;
+    }
+    
+}
