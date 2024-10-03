@@ -26,6 +26,7 @@ public class Health : MonoBehaviour
     public event DeathDelegate OnDeath;
     public delegate void OnTakeDamageDelegate(float damage);
     public event OnTakeDamageDelegate OnTakeDamage;
+    [SerializeField] private Animator EyeAnimator;
     
     void Start()
     {
@@ -44,6 +45,10 @@ public class Health : MonoBehaviour
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
         // Run the OnHit event for anything that is subscribed to it
         OnTakeDamage?.Invoke(damage);
+        // If the entity has an EyeAnimator Animator component, set the isShocked Trigger
+        if(EyeAnimator != null){
+            EyeAnimator.SetTrigger("isShocked");
+        }
         // If the enemy's health reaches 0, do something (e.g., destroy enemy)
         if (CurrentHealth == 0)
         {
@@ -54,7 +59,6 @@ public class Health : MonoBehaviour
     private void Die()
     {
         IsDead = true;
-        Debug.Log("I'm dead!");
         // Trigger the death event for anything that is subscribed 
         // to the OnDeath event
         OnDeath?.Invoke();

@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     public static bool IsGamePaused { get; private set; }
     public static bool IsGameOver { get; private set; }
     public static bool IsGameWon { get; private set; }
+    private int Kills = 0;
+    private int Coins = 0;
+    private int Score = 0;
     private GameObject player;
 
     // Called when the script instance is being loaded
@@ -24,6 +27,45 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject); // Destroy duplicate GameManager objects
         }
+    }
+
+    void Start()
+    {
+        // Initialize the game state
+        IsGamePaused = false;
+        IsGameOver = false;
+        IsGameWon = false;
+        Kills = 0;
+
+        // Subscribe to EventBus OnEnenmyDied event
+        EventBus.Instance.OnEnemyDied += OnEnemyDied;
+        EventBus.Instance.OnCoinCollected += OnCoinCollected;
+    }
+
+    // Clean up
+    private void OnDestroy()
+    {
+        // Unsubscribe from the event
+        EventBus.Instance.OnEnemyDied -= OnEnemyDied;
+        EventBus.Instance.OnCoinCollected -= OnCoinCollected;
+    }
+
+    public int GetKills()
+    {
+        return Kills;
+    }
+
+    public int GetCoins()
+    {
+        return Coins;
+    }
+    void OnCoinCollected(int value)
+    {
+        Coins += value;
+    }
+    void OnEnemyDied(Enemy enemy)
+    {
+        Kills++;
     }
 
     // Your globally accessible methods and variables

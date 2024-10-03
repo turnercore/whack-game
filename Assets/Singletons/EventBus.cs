@@ -37,6 +37,9 @@ public class EventBus : MonoBehaviour
     - OnGameOver: Triggered when the game is over
     - OnGamePaused: Triggered when the game is paused
     - OnGameResumed: Triggered when the game is resumed
+    - OnXPChanged: Triggered when the player's XP changes
+    - OnLevelUp: Triggered when the player levels up
+    - OnCoinCollected: Triggered when a coin is collected
 
     */
 
@@ -74,7 +77,8 @@ public class EventBus : MonoBehaviour
     public event Action<Enemy> OnEnemyDied;
     public void EnemyDied(Enemy enemy)
     {
-        OnEnemyDied?.Invoke(enemy); // Safely invoke event
+        OnEnemyDied?.Invoke(enemy);
+        KillsTextUpdate(); // Trigger KillsTextUpdate event
     }
     public void SubscribeToEnemyDeath(Action<Enemy> listener)
     {
@@ -86,4 +90,64 @@ public class EventBus : MonoBehaviour
         OnEnemyDied -= listener;
     }
 
+    // OnXPChanged event trigger
+    public event Action OnXPChanged;
+    public void XPChanged()
+    {
+        OnXPChanged?.Invoke(); // Safely invoke event
+    }
+    public void SubscribeToXPChanged(Action listener)
+    {
+        OnXPChanged += listener;
+    }
+    public void UnsubscribeFromXPChanged(Action listener)
+    {
+        OnXPChanged -= listener;
+    }
+
+    // OnLevelUp event trigger
+    public event Action OnLevelUp;
+    public void LevelUp()
+    {
+        OnLevelUp?.Invoke(); // Safely invoke event
+        OnXPChanged?.Invoke(); // Trigger XPChanged event
+    }
+    public void SubscribeToLevelUp(Action listener)
+    {
+        OnLevelUp += listener;
+    }
+    public void UnsubscribeFromLevelUp(Action listener)
+    {
+        OnLevelUp -= listener;
+    }
+
+    // OnCoinCollected event trigger
+    public event Action<int> OnCoinCollected;
+    public void CoinCollected(int value)
+    {
+        OnCoinCollected?.Invoke(value); // Safely invoke event
+    }
+    public void SubscribeToCoinCollected(Action<int> listener)
+    {
+        OnCoinCollected += listener;
+    }
+    public void UnsubscribeFromCoinCollected(Action<int> listener)
+    {
+        OnCoinCollected -= listener;
+    }
+
+    // OnKillsTextUpdate event trigger
+    public event Action OnKillsTextUpdate;
+    public void KillsTextUpdate()
+    {
+        OnKillsTextUpdate?.Invoke(); // Safely invoke event
+    }
+    public void SubscribeToKillsTextUpdate(Action listener)
+    {
+        OnKillsTextUpdate += listener;
+    }
+    public void UnsubscribeFromKillsTextUpdate(Action listener)
+    {
+        OnKillsTextUpdate -= listener;
+    }
 }

@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using TMPro;
 
 public class FloatingDamageText : MonoBehaviour
@@ -10,13 +8,7 @@ public class FloatingDamageText : MonoBehaviour
     //Text mesh pro text component reference
     [SerializeField] private TMP_Text damageText;
     [SerializeField] private Animator anim;
-    private float timer;
     private GameObject target;
-
-    void Start()
-    {
-        timer = 0f;
-    }
 
     public void Initialize(float damage, GameObject entity)
     {
@@ -26,6 +18,7 @@ public class FloatingDamageText : MonoBehaviour
         anim.SetTrigger("Start");
     }
 
+    // Called in the FloatingText animation event
     private void DestroySelf() {
         Destroy(gameObject);
     }

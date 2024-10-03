@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Vampire-Sluggers.sln"
+    "dotnet.defaultSolution": "whack-game.sln"
 }

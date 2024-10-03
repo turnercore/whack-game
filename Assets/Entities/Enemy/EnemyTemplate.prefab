@@ -240,6 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 5
   IsDead: 0
+  EyeAnimator: {fileID: 3366443519906710915}
 --- !u!114 &654577723970651042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,6 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00a109aebcd1ef44d8fb1c4433e702da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
   rotationSpeed: 200
 --- !u!114 &1831679204433729512
 MonoBehaviour:
@@ -698,6 +700,11 @@ PrefabInstance:
 --- !u!4 &216558829408734431 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 656839551028827842, guid: 921419792d10123439bdc4f8cbd59afd, type: 3}
+  m_PrefabInstance: {fileID: 728684893703363101}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3366443519906710915 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2640461262358929310, guid: 921419792d10123439bdc4f8cbd59afd, type: 3}
   m_PrefabInstance: {fileID: 728684893703363101}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2335329340305004981

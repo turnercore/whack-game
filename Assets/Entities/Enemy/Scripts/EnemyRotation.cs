@@ -1,26 +1,21 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyRotation : MonoBehaviour
 {
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     public float rotationSpeed = 200f; // Speed of rotation
     private Enemy enemy;
     private bool IsDead => enemy.IsDead;
 
-    private void Start()
+    public void Initialize(Rigidbody2D rb, Enemy enemy)
     {
-        enemy = GetComponent<Enemy>();
+        this.rb = rb;
+        this.enemy = enemy;
     }
 
-    private void Awake()
-    {
-        // Cache the Rigidbody component
-        rb = GetComponent<Rigidbody2D>();
-    }
-
-    private void OnDisable()
+    public void Disable()
     {
         // If the enemy is dead it no longer needs to rotate upright
         if (IsDead)
@@ -39,7 +34,7 @@ public class EnemyRotation : MonoBehaviour
 
 
 
-    private void OnEnable()
+    public void Enable()
     {
         // Allow enemy to move around
         rb.constraints = RigidbodyConstraints2D.None; // Remove constraints to allow movement and rotation
@@ -63,5 +58,10 @@ public class EnemyRotation : MonoBehaviour
 
         // Ensure final rotation is exactly upright
         transform.rotation = targetRotation;
+    }
+
+    internal void Initalize(Rigidbody2D rb)
+    {
+        throw new NotImplementedException();
     }
 }

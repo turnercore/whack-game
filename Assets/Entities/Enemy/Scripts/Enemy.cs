@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     #region Variables
     [SerializeField] private float weight = 1.0f;
     public float speed = 1.0f;
+    public float damage = 1.0f;
     [SerializeField] private float wackedTime = 0.5f;
     public bool IsWacked = false;
     private bool hasFirstDeathStop = false;
@@ -62,8 +63,11 @@ public class Enemy : MonoBehaviour
         offScreenChecker.OnScreenStatusChanged += OnScreenStatusChanged;
         // Subscribe to health ondeath
         health.OnDeath += Die;
+
+        // Set rb for rotation
+        enemyRotation.Initialize(rb, this);
         // Disable rotation
-        enemyRotation.enabled = false;
+        enemyRotation.Disable();
     }
 
     private void OnDestroy()
@@ -95,7 +99,7 @@ public class Enemy : MonoBehaviour
         // Disable the brain
         brain.enabled = false;
         // Disable the rotation script
-        enemyRotation.enabled = true;
+        enemyRotation.Disable();
         // Fire enemy is dead event
         EventBus.Instance.EnemyDied(this);
     }
@@ -132,7 +136,7 @@ public class Enemy : MonoBehaviour
             StartCoroutine(DisableBrainTemporarily());
         }
         // Unfreeze enemy rotation
-        enemyRotation.enabled = true;
+        enemyRotation.Enable();
         // Enable other enemy detection 
         triggerCollider.SetActive(true);
         StartCoroutine(ResetIsWacked(wackedTime + addedWackedTime));
@@ -143,7 +147,7 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(resetTime);
         IsWacked = false;
         // Freeze enemy rotation
-        enemyRotation.enabled = false;
+        enemyRotation.Disable();
         // Disable other enemy detection
         triggerCollider.SetActive(false);
         // If the enemy is dead, slowly lower the velocity to 0

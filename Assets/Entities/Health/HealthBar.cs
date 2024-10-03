@@ -1,31 +1,27 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthBar : MonoBehaviour
 {
     public Transform foreground;
     public Transform background;
-    private float _maxHealth = 1f;
-    private float _currentHealth = 1f;
-    private Health health; // Reference to the Health script on the parent object
+    [SerializeField] private Health health; // Reference to the Health script on the parent object
+    private float y;
+    private float z;
+    private float x;
+    [SerializeField] private AnimationCurve animationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [SerializeField] private float animationDuration = 0.5f; // How long the animation should last
 
-    // Start
     void Start()
-    {
-        if (foreground == null)
-        {
-            Debug.LogError("Foreground transform is missing on the HealthBar.");
-        }
+    {        
+        // Set the foreground to the max width, height, and z + 1
+        // foreground.localScale = new Vector3(background.localScale.x, background.localScale.y, background.localScale.z + 1);
+        
+        // Get the initial y and z of the health bar foreground background\
+        x = foreground.localScale.x;
+        y = foreground.localScale.y;
+        z = foreground.localScale.z;
 
-        if (background == null)
-        {
-            Debug.LogError("Background transform is missing on the HealthBar.");
-        }
-
-        // Initialize to ensure the health bar is correctly scaled at the start
-        // Get the parent component's Health script
-        health = GetComponentInParent<Health>();
         if (health != null)
         {
             // Subscribe to the OnHit event
@@ -33,61 +29,55 @@ public class HealthBar : MonoBehaviour
             // Subscribe to the OnDeath event
             health.OnDeath += UpdateHealthBarDeath;
         }
-        else
-        {
-            Debug.LogWarning("Health component not found on the parent GameObject. Health bar will not update.");
-        }
     }
 
-    public float MaxHealth
+    // Cleanup
+    private void OnDestroy()
     {
-        get => _maxHealth;
-        set
-        {
-            _maxHealth = value;
-            if (CurrentHealth > MaxHealth)
-            {
-                CurrentHealth = MaxHealth;
-            }
-        }
-    }
-    public float CurrentHealth
-    {
-        get => _currentHealth;
-        set
-        {
-            // Clamp the value between 0 and MaxHealth
-            _currentHealth = Mathf.Clamp(value, 0, MaxHealth);
-
-            // Calculate health percent
-            float healthPercent = _currentHealth / MaxHealth;
-
-            // Update the scale of the foreground
-            // foreground.localScale = new Vector3(healthPercent, 1, 1);
-            Debug.Log($"Health Percent: {healthPercent}, Scale: {foreground.localScale}");
-
-        }
+        // Unsubscribe from the OnHit event
+        health.OnTakeDamage -= UpdateHealthBar;
+        // Unsubscribe from the OnDeath event
+        health.OnDeath -= UpdateHealthBarDeath;
     }
 
     public void UpdateHealthBar(float damage)
     {
-        if (health != null)
-        {
-            // Update the health bar with the current health
-            CurrentHealth = health.CurrentHealth;
-            MaxHealth = health.MaxHealth;
+        // Calculate the target width based on the health percentage
+        float targetWidth = health.CurrentHealth / health.MaxHealth * y;
 
-            if (health.IsDead)
-            {
-                // Disable the health bar if the parent object is dead
-                gameObject.SetActive(false);
-            }
-        }
+        // Stop any running coroutines before starting a new one
+        StopAllCoroutines();
+        StartCoroutine(AnimateHealthBar(targetWidth));
     }
+
+    private IEnumerator AnimateHealthBar(float targetWidth){
+    float startWidth = foreground.localScale.y; // Get the current width
+    float elapsed = 0f;
+
+    // Animate over the duration
+    while (elapsed < animationDuration)
+    {
+        elapsed += Time.deltaTime;
+        // Evaluate the curve to get the progress
+        float t = elapsed / animationDuration;
+        float curveValue = animationCurve.Evaluate(t);
+
+        // Lerp between start and target based on curve value
+        float newWidth = Mathf.Lerp(startWidth, targetWidth, curveValue);
+        foreground.localScale = new Vector3(x, newWidth, z);
+
+        yield return null;
+    }
+
+    // Ensure the final scale is set precisely
+    foreground.localScale = new Vector3(x, targetWidth, z);
+    }
+
+
 
     public void UpdateHealthBarDeath()
     {
-        // Set the health bar to empty when the parent object dies
-        CurrentHealth = 0;
+        // Set the width of the foreground to 0
+        foreground.localScale = Vector3.zero;
     }
 }
