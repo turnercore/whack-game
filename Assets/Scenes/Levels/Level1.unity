@@ -242,31 +242,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!1 &1186863265 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7581675240770237863, guid: 7e78bdb6db887a64eaee7db7167e016e, type: 3}
-  m_PrefabInstance: {fileID: 3097458954681881655}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1186863273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1186863265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b011ba133697f74db654ade2ddfaaf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupRadius: 1
-  weaponSizeIncrease: 1
-  healthIncrease: 1
-  speedIncrease: 1
-  invicibilityDuration: 1
-  weaponForceIncrease: 1
-  weaponRotationSpeedIncrease: 1
-  weaponDamageIncrease: 1
 --- !u!1 &1605747670
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!156049354 &1605747671
 Grid:
   m_ObjectHideFlags: 0
@@ -328,7 +303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1718172414
 Transform:
   m_ObjectHideFlags: 0
@@ -386,7 +361,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e09e870f568f77b4b91023b293af4981, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.16470589}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.050980393}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -472,6 +447,18 @@ PrefabInstance:
     - target: {fileID: 955695179669085982, guid: 8440f0730a6922740928958c69734eb5, type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044128906347846347, guid: 8440f0730a6922740928958c69734eb5, type: 3}
+      propertyPath: floatySpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044128906347846347, guid: 8440f0730a6922740928958c69734eb5, type: 3}
+      propertyPath: floatyAmount
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044128906347846347, guid: 8440f0730a6922740928958c69734eb5, type: 3}
+      propertyPath: idleThreshold
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6655852972418666160, guid: 8440f0730a6922740928958c69734eb5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -573,10 +560,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7581675240770237863, guid: 7e78bdb6db887a64eaee7db7167e016e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1186863273}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e78bdb6db887a64eaee7db7167e016e, type: 3}
 --- !u!1001 &8426959133297809206
 PrefabInstance:
