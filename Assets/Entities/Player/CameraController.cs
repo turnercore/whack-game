@@ -9,11 +9,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float deadzone = 0.5f;
     [SerializeField] private float floatyAmount = 0.02f;
     [SerializeField] private float floatySpeed = 0.2f;
-    private Vector3 targetPosition;
     [SerializeField] private Vector3 offset;
+    [SerializeField] private float idleThreshold = 1f;
+    private Vector3 targetPosition;
     private Transform playerTransform;
     private float playerIdleTime = 0f;
-    [SerializeField] private float idleThreshold = 1f;
     private Vector3 lastPlayerPosition;
     private bool isIdle = false;
 
@@ -48,7 +48,6 @@ public class CameraController : MonoBehaviour
             isIdle = false;
         }
     }
-
     private void CheckPlayerIdle()
     {
         if (playerTransform.position == lastPlayerPosition)

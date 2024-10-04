@@ -10,8 +10,10 @@ public class GameManager : MonoBehaviour
     public float timeElapsed = 0f;
     private int Kills = 0;
     private int Coins = 0;
-    private int Score = 0;
+    public int Score => CalculateScore();
     private GameObject _player;
+    // Sciptable Object HighScore
+    public HighScore highScore;
     public GameObject Player {
         get 
         {
@@ -24,11 +26,12 @@ public class GameManager : MonoBehaviour
         set
         {
             _player = value;
-            OnSetPlayer(value);
         }
     }
 
-
+    public int GetHighScore() {
+        return highScore.score;
+    }
 
     // Called when the script instance is being loaded
     private void Awake()
@@ -54,6 +57,7 @@ public class GameManager : MonoBehaviour
         // Subscribe to EventBus OnEnenmyDied event
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
         EventBus.Instance.OnCoinCollected += OnCoinCollected;
+        EventBus.Instance.OnPlayerDied += GameOver;
     }
 
     void InitializeGame()
@@ -64,33 +68,33 @@ public class GameManager : MonoBehaviour
         IsGameWon = false;
         Kills = 0;
         Coins = 0;
-        Score = 0;
         timeElapsed = 0f;
     }
 
+    int CalculateScore() {
+        return Kills * 100 + Coins * 50 + (int)timeElapsed * 10 + GetPlayerComponent().Level * 1000;
+    }
+
     // Clean up
-    private void OnDestroy()
-    {
+    private void OnDestroy() {
         // Unsubscribe from the event
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         EventBus.Instance.OnCoinCollected -= OnCoinCollected;
+        EventBus.Instance.OnPlayerDied -= GameOver;
     }
 
-    private void Update()
-    {
+    private void Update() {
         if (!IsGamePaused && !IsGameOver && !IsGameWon)
         {
             timeElapsed += Time.deltaTime;
         }
     }
 
-    public int GetKills()
-    {
+    public int GetKills() {
         return Kills;
     }
 
-    public int GetCoins()
-    {
+    public int GetCoins() {
         return Coins;
     }
 
@@ -104,19 +108,12 @@ public class GameManager : MonoBehaviour
         Kills++;
     }
 
-    // Your globally accessible methods and variables
-    public int playerScore = 0;
-
-    public void AddScore(int points)
-    {
-        playerScore += points;
-        Debug.Log("Score Added: " + points);
-    }
     public void RegisterPlayer(GameObject player)
     {
         // Register the player with the GameManager
         Debug.Log("Player registered with GameManager.");
-        this.Player = player;
+        Player = player;
+        OnPlayerSet?.Invoke(player);
     }
     public GameObject GetPlayerObject()
     {
@@ -129,10 +126,31 @@ public class GameManager : MonoBehaviour
 
         // OnPlayerSet Event
     public delegate void PlayerSetDelegate(GameObject player);
-    public event PlayerSetDelegate PlayerSet;
+    public event PlayerSetDelegate OnPlayerSet;
 
-    private void OnSetPlayer(GameObject player)
+    // Game over event
+    public delegate void GameOverDelegate();
+    public event GameOverDelegate OnGameOver;
+
+    public void GameOver()
     {
-        PlayerSet?.Invoke(player);
+        IsGameOver = true;
+        UpdateHighScore();
+        OnGameOver?.Invoke();
+    }
+
+    private void UpdateHighScore()
+    {
+        if (Score > highScore.score)
+        {
+            highScore.score = Score;
+        }
+        highScore.SaveData();
+    }
+
+    private void UpdateHighScorePlayer(string name)
+    {
+        highScore.PlayerInitials = name;
+        highScore.SaveData();
     }
 }
