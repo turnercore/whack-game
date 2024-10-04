@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f38af88724635374892e50e53d48435f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 3
+  _maxHealth: 2
   IsDead: 0
   EyeAnimator: {fileID: 3366443519906710915}
 --- !u!114 &654577723970651042
@@ -232,8 +232,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462550817109f5d45a3396ba8a9de5d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDrops: []
-  dropChance: 0
+  itemDrops:
+  - {fileID: 2462829296510086717, guid: a12fc2eef70348b4cb1d0c68076ae3fc, type: 3}
+  dropChance: 15
   xpDrop: {fileID: 2587477085633228759, guid: cfbbe65faa14e8149a0af093e2928e0c, type: 3}
   xpAmount: 1
 --- !u!114 &7966302044895671875

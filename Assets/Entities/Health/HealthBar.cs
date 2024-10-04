@@ -28,6 +28,9 @@ public class HealthBar : MonoBehaviour
             health.OnTakeDamage += UpdateHealthBar;
             // Subscribe to the OnDeath event
             health.OnDeath += UpdateHealthBarDeath;
+            // Sbuscribe to the OnHeal event
+            health.OnHeal += UpdateHealthBar;
+
         }
     }
 
@@ -38,9 +41,11 @@ public class HealthBar : MonoBehaviour
         health.OnTakeDamage -= UpdateHealthBar;
         // Unsubscribe from the OnDeath event
         health.OnDeath -= UpdateHealthBarDeath;
+        // Unsubscribe from the OnHeal event
+        health.OnHeal -= UpdateHealthBar;
     }
 
-    public void UpdateHealthBar(float damage)
+    public void UpdateHealthBar(float amount)
     {
         // Calculate the target width based on the health percentage
         float targetWidth = health.CurrentHealth / health.MaxHealth * y;
@@ -49,6 +54,8 @@ public class HealthBar : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(AnimateHealthBar(targetWidth));
     }
+
+
 
     private IEnumerator AnimateHealthBar(float targetWidth){
     float startWidth = foreground.localScale.y; // Get the current width
@@ -72,8 +79,6 @@ public class HealthBar : MonoBehaviour
     // Ensure the final scale is set precisely
     foreground.localScale = new Vector3(x, targetWidth, z);
     }
-
-
 
     public void UpdateHealthBarDeath()
     {

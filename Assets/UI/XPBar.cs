@@ -5,7 +5,7 @@ public class XPBar : MonoBehaviour
     public float maxWidth = 1800f;
     private float height = 33f;
     //[SerializeField] private AnimationCurve curve;
-    private float currentWidth{
+    private float CurrentWidth{
         get{
             return Xp / MaxXP * maxWidth;
         }
@@ -24,14 +24,8 @@ public class XPBar : MonoBehaviour
         rectTransform.sizeDelta = new Vector2(0, height);
     }
 
-    // Cleanup
-    // private void OnDestroy()
-    // {
-    //     EventBus.Instance.UnsubscribeFromXPChanged(UpdateXPBar);
-    // }
-
-    private void Update()
+    private void LateUpdate()
     {
-        rectTransform.sizeDelta = new Vector2(Mathf.Lerp(rectTransform.sizeDelta.x, currentWidth, Time.deltaTime * 5), height);
+        rectTransform.sizeDelta = new Vector2(Mathf.Lerp(rectTransform.sizeDelta.x, CurrentWidth, Time.deltaTime * 5), height);
     }
 }

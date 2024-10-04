@@ -117,9 +117,14 @@ public class PlayerController : MonoBehaviour
         EventBus.Instance.PlayerDied();
     }
 
-    private void Heal(float amount)
+    public void Heal(float amount)
     {
         health.Heal(amount);
+    }
+
+    public void AddCoins(int coins)
+    {
+        EventBus.Instance.CoinCollected(coins);
     }
     
 }

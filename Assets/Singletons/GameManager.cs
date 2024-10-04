@@ -4,13 +4,31 @@ public class GameManager : MonoBehaviour
 {
     // The static instance of GameManager
     public static GameManager Instance { get; private set; }
-    public static bool IsGamePaused { get; private set; }
-    public static bool IsGameOver { get; private set; }
-    public static bool IsGameWon { get; private set; }
+    public bool IsGamePaused { get; private set; }
+    public bool IsGameOver { get; private set; }
+    public bool IsGameWon { get; private set; }
+    public float timeElapsed = 0f;
     private int Kills = 0;
     private int Coins = 0;
     private int Score = 0;
-    private GameObject player;
+    private GameObject _player;
+    public GameObject Player {
+        get 
+        {
+            if (_player == null)
+            {
+                _player = GameObject.FindGameObjectWithTag("Player");
+            }
+            return _player;
+        }
+        set
+        {
+            _player = value;
+            OnSetPlayer(value);
+        }
+    }
+
+
 
     // Called when the script instance is being loaded
     private void Awake()
@@ -31,15 +49,23 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        InitializeGame();
+
+        // Subscribe to EventBus OnEnenmyDied event
+        EventBus.Instance.OnEnemyDied += OnEnemyDied;
+        EventBus.Instance.OnCoinCollected += OnCoinCollected;
+    }
+
+    void InitializeGame()
+    {
         // Initialize the game state
         IsGamePaused = false;
         IsGameOver = false;
         IsGameWon = false;
         Kills = 0;
-
-        // Subscribe to EventBus OnEnenmyDied event
-        EventBus.Instance.OnEnemyDied += OnEnemyDied;
-        EventBus.Instance.OnCoinCollected += OnCoinCollected;
+        Coins = 0;
+        Score = 0;
+        timeElapsed = 0f;
     }
 
     // Clean up
@@ -48,6 +74,14 @@ public class GameManager : MonoBehaviour
         // Unsubscribe from the event
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         EventBus.Instance.OnCoinCollected -= OnCoinCollected;
+    }
+
+    private void Update()
+    {
+        if (!IsGamePaused && !IsGameOver && !IsGameWon)
+        {
+            timeElapsed += Time.deltaTime;
+        }
     }
 
     public int GetKills()
@@ -59,10 +93,12 @@ public class GameManager : MonoBehaviour
     {
         return Coins;
     }
+
     void OnCoinCollected(int value)
     {
         Coins += value;
     }
+
     void OnEnemyDied(Enemy enemy)
     {
         Kills++;
@@ -80,14 +116,23 @@ public class GameManager : MonoBehaviour
     {
         // Register the player with the GameManager
         Debug.Log("Player registered with GameManager.");
-        this.player = player;
+        this.Player = player;
     }
     public GameObject GetPlayerObject()
     {
-        return player;
+        return Player;
     }
     public PlayerController GetPlayerComponent()
     {
-        return player.GetComponent<PlayerController>();
+        return Player.GetComponent<PlayerController>();
+    }
+
+        // OnPlayerSet Event
+    public delegate void PlayerSetDelegate(GameObject player);
+    public event PlayerSetDelegate PlayerSet;
+
+    private void OnSetPlayer(GameObject player)
+    {
+        PlayerSet?.Invoke(player);
     }
 }

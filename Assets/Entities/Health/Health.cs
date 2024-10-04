@@ -73,7 +73,13 @@ public class Health : MonoBehaviour
         CurrentHealth += amount;
         // Clamp the value between 0 and MaxHealth
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+        // Run the OnHeal event for anything that is subscribed to it
+        OnHeal?.Invoke(amount);
     }
+    // OnHeal event taking the heal amount float
+    public delegate void OnHealDelegate(float amount);
+    public event OnHealDelegate OnHeal;
+    
 
     public void Revive()
     {

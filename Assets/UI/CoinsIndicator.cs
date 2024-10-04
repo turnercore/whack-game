@@ -2,21 +2,19 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UIKillIndicator : MonoBehaviour
+public class CoinsIndicator : MonoBehaviour
 {
     private TMP_Text TMPro;
-    private string KillsString => GameManager.Instance.GetKills().ToString();
+    private string CoinsString => GameManager.Instance.GetCoins().ToString();
     // Start is called before the first frame update
     void Start()
     {
         TMPro = GetComponent<TMP_Text>();
-        // Subscribe to Enemy Killed event
-        TMPro.text = KillsString;
-
+        TMPro.text = CoinsString;
     }
 
     void LateUpdate()
     {
-        TMPro.text = KillsString;
+        TMPro.text = CoinsString;
     }
 }

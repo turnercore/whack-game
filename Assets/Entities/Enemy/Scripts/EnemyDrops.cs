@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class EnemyDrops : MonoBehaviour
 {
-    public GameObject[] itemDrops; // Array of drop prefabs
+    [SerializeField] private GameObject[] itemDrops; // Array of drop prefabs
     public float dropChance; // Chance of dropping an item
-    public GameObject xpDrop; // Array of XP drop prefabs
-    public int xpAmount; // Amount of XP to drop
+    [SerializeField] private GameObject xpDrop; // Array of XP drop prefabs
+    public int xpAmount; // Number of XP to drop
 
     // The enemy will always drop xp depending on the xpAmount, it has a chance to drop an item out of the itemDrops array
 
@@ -18,7 +18,7 @@ public class EnemyDrops : MonoBehaviour
         }
 
         // Drop item
-        if (Random.value <= dropChance)
+        if (Random.value <= dropChance / 100f)
         {
             // Randomly select an item drop prefab from the itemDrops array
             GameObject itemDrop = itemDrops[Random.Range(0, itemDrops.Length)];
