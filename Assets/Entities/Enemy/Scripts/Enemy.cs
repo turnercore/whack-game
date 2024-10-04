@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     public float AddedForceHit { get; private set; }
     public bool IsDead => health.IsDead;
     [Header("Linked Components")]
-    [SerializeField] private Rigidbody2D rb;
+    public Rigidbody2D rb;
     [SerializeField] private Health health;
     [SerializeField] private EnemyBrain brain;
     [SerializeField] private EnemyRotation enemyRotation;

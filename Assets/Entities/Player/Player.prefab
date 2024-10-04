@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 5007259819663893416}
   - component: {fileID: 4302335190332925749}
   - component: {fileID: 6461300302921248424}
+  - component: {fileID: 5245532339694606750}
   - component: {fileID: 4737687776430889119}
   - component: {fileID: 659280112061831102}
   m_Layer: 3
@@ -253,6 +254,26 @@ MonoBehaviour:
   movement: {fileID: 659280112061831102}
   weaponRigidBody: {fileID: 3041101233133407289}
   weaponPivot: {fileID: 7413147845315022202}
+--- !u!114 &5245532339694606750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7581675240770237863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b011ba133697f74db654ade2ddfaaf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupRadius: 1
+  weaponSizeIncrease: 1
+  healthIncrease: 1
+  speedIncrease: 1
+  invicibilityDuration: 1
+  weaponForceIncrease: 1
+  weaponRotationSpeedIncrease: 1
+  weaponDamageIncrease: 1
 --- !u!114 &4737687776430889119
 MonoBehaviour:
   m_ObjectHideFlags: 0
