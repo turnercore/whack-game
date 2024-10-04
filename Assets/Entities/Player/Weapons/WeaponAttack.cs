@@ -21,19 +21,27 @@ public class WeaponAttack : MonoBehaviour
     {
         if (other.collider.CompareTag("Enemy"))
         {
-            // Debug.Log("Hit the enemy with force: " + other.relativeVelocity.magnitude);
+            HitEnemy(other);
+        }
+    }
+
+    void HitEnemy(Collision2D enemy)
+    {
+        // Debug.Log("Hit the enemy with force: " + other.relativeVelocity.magnitude);
             // See if the collision as t a minimum force
-            if (other.relativeVelocity.magnitude < MIN_FORCE_OF_IMPACT)
+            if (enemy.relativeVelocity.magnitude < MIN_FORCE_OF_IMPACT)
             {
                 // Debug.Log("Not enough force to hit the enemy");
                 return;
             }
             // Get the normal
-            Vector2 direction = other.contacts[0].normal;
+            Vector2 direction = enemy.contacts[0].normal;
             // Get the enemy's Rigidbody2D and enemy weight from its script
-            Rigidbody2D enemyRb = other.collider.GetComponent<Rigidbody2D>();
-            other.collider.GetComponent<Enemy>().Hit(direction, Weapon.damage, Weapon.addedForce);
-        }
+            Rigidbody2D enemyRb = enemy.collider.GetComponent<Rigidbody2D>();
+            enemy.collider.GetComponent<Enemy>().Hit(direction, Weapon.damage, Weapon.addedForce);
+
+            // Play the hit sound
+            Weapon.PlayHitEffects();
     }
 }
 

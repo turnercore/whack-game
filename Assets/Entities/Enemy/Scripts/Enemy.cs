@@ -20,13 +20,14 @@ public class Enemy : MonoBehaviour
     public float AddedForceHit { get; private set; }
     public bool IsDead => health.IsDead;
     [Header("Linked Components")]
-    public Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Health health;
     [SerializeField] private EnemyBrain brain;
     [SerializeField] private EnemyRotation enemyRotation;
     [SerializeField] private EnemyDrops enemyDrops;
     [SerializeField] private GameObject triggerCollider;
     [SerializeField] private OffScreenChecker offScreenChecker;
+    [SerializeField] private ParticleSystem hitParticles;
 
 
 
@@ -34,31 +35,6 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        // Get references to components if they aren't set
-        if (rb == null)
-        {
-            rb = GetComponent<Rigidbody2D>();
-        }
-        if (health == null)
-        {
-            health = GetComponent<Health>();
-        }
-        if (brain == null)
-        {
-            brain = GetComponent<EnemyBrain>();
-        }
-        if (enemyRotation == null)
-        {
-            enemyRotation = GetComponent<EnemyRotation>();
-        }
-        if (enemyDrops == null)
-        {
-            enemyDrops = GetComponent<EnemyDrops>();
-        }
-        if (offScreenChecker == null)
-        {
-            offScreenChecker = GetComponent<OffScreenChecker>();
-        }
         // Subscribe to off-screen status changes
         offScreenChecker.OnScreenStatusChanged += OnScreenStatusChanged;
         // Subscribe to health ondeath
@@ -126,6 +102,12 @@ public class Enemy : MonoBehaviour
         health.TakeDamage(damage);
         // Add force to the enemy in the direction of the hit
         rb.AddForce(force * direction, ForceMode2D.Impulse);
+        // Play hit particles if they exist
+        if (hitParticles != null && !IsDead)
+        {
+            hitParticles.Play();
+        }
+
     }
     private void Wacked(float addedWackedTime = 0.0f)
     {
