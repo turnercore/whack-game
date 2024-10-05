@@ -4,16 +4,35 @@ using UnityEngine;
 public class EnemyEmote : MonoBehaviour
 {
     [Header("Linked Components")]
-    [SerializeField] private float ouchEmoteLength = 0.5f;
-    [SerializeField] private float stunnedEmoteLength = 1.0f;
-    [SerializeField] private float worriedEmoteLength = 1.5f;
-    [SerializeField] private float angryEmoteLength = 0.7f;
-    [SerializeField] private float yellingEmoteLength = 1.0f;
-    [SerializeField] private Enemy enemy;
-    [SerializeField] private Animator emoteAnimator;
-    [SerializeField] private OffScreenChecker offScreenChecker;
-    [SerializeField] private Health health;
-    [SerializeField] private bool isBoss = false;
+    [SerializeField]
+    private float ouchEmoteLength = 0.5f;
+
+    [SerializeField]
+    private float stunnedEmoteLength = 1.0f;
+
+    [SerializeField]
+    private float worriedEmoteLength = 1.5f;
+
+    [SerializeField]
+    private float angryEmoteLength = 0.7f;
+
+    [SerializeField]
+    private float yellingEmoteLength = 1.0f;
+
+    [SerializeField]
+    private Enemy enemy;
+
+    [SerializeField]
+    private Animator emoteAnimator;
+
+    [SerializeField]
+    private OffScreenChecker offScreenChecker;
+
+    [SerializeField]
+    private Health health;
+
+    [SerializeField]
+    private bool isBoss = false;
 
     private float emoteTimer = 0f;
     private bool hasYelled = false;
@@ -28,7 +47,7 @@ public class EnemyEmote : MonoBehaviour
         Stunned,
         Worried,
         Angry,
-        Yelling
+        Yelling,
     }
 
     void Start()
@@ -156,7 +175,8 @@ public class EnemyEmote : MonoBehaviour
 
     private void TransitionToState(EmoteState newState, float duration = 0f)
     {
-        if (currentState == newState || isTransitioning) return;
+        if (currentState == newState || isTransitioning)
+            return;
 
         isTransitioning = true;
         currentState = newState;
@@ -175,7 +195,9 @@ public class EnemyEmote : MonoBehaviour
 
     private void ChangeEmote(EmoteState emoteState)
     {
-        if (enemy.IsDead) return;
-        if (emoteAnimator != null) emoteAnimator.SetInteger("EmoteType", (int)emoteState);
+        if (enemy.IsDead)
+            return;
+        if (emoteAnimator != null)
+            emoteAnimator.SetInteger("EmoteType", (int)emoteState);
     }
 }

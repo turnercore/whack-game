@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int _maxHealth = 5;
+    [SerializeField]
+    private int _maxHealth = 5;
     public float MaxHealth
     {
         get => (float)_maxHealth;
@@ -28,7 +29,9 @@ public class Health : MonoBehaviour
     public event DeathDelegate OnDeath;
     public delegate void OnTakeDamageDelegate(float damage);
     public event OnTakeDamageDelegate OnTakeDamage;
-    [SerializeField] private Animator EyeAnimator;
+
+    [SerializeField]
+    private Animator EyeAnimator;
 
     void Start()
     {
@@ -62,7 +65,7 @@ public class Health : MonoBehaviour
     private void Die()
     {
         IsDead = true;
-        // Trigger the death event for anything that is subscribed 
+        // Trigger the death event for anything that is subscribed
         // to the OnDeath event
         OnDeath?.Invoke();
     }
@@ -79,10 +82,10 @@ public class Health : MonoBehaviour
         // Run the OnHeal event for anything that is subscribed to it
         OnHeal?.Invoke(amount);
     }
+
     // OnHeal event taking the heal amount float
     public delegate void OnHealDelegate(float amount);
     public event OnHealDelegate OnHeal;
-
 
     public void Revive()
     {

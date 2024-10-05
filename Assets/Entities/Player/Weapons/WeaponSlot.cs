@@ -3,19 +3,21 @@ using UnityEngine;
 public class WeaponSlot : MonoBehaviour
 {
     // Variable for Prefab of the weapon
-    [SerializeField] private GameObject startingWeapon;   
+    [SerializeField]
+    private GameObject startingWeapon;
     private GameObject _weaponPrefab;
     public GameObject WeaponPrefab
     {
         get { return _weaponPrefab; }
-        set { 
+        set
+        {
             _weaponPrefab = value;
             SetWeapon(_weaponPrefab);
         }
     }
+
     // Weapon script
     public Weapon weapon;
-
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +28,6 @@ public class WeaponSlot : MonoBehaviour
 
     void SetWeapon(GameObject weaponPrefab)
     {
-
         // Delete the current child weapon object
         foreach (Transform child in transform)
         {

@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class FloatingTextController : MonoBehaviour
 {
-    [SerializeField] private GameObject floatingTextPrefab;
+    [SerializeField]
+    private GameObject floatingTextPrefab;
     private Health health;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,8 +19,8 @@ public class FloatingTextController : MonoBehaviour
         {
             health.OnTakeDamage += CreateFloatingDamageText;
         }
-      
     }
+
     public void CreateFloatingDamageText(float damage)
     {
         // Instantiate the floating text prefab

@@ -24,7 +24,7 @@ public abstract class EnemyBrain : MonoBehaviour
         else
         {
             Debug.LogWarning("Player not found.");
-            enabled = false;  // Disable this script if the player is not found
+            enabled = false; // Disable this script if the player is not found
             return;
         }
 
@@ -33,7 +33,7 @@ public abstract class EnemyBrain : MonoBehaviour
         if (enemy == null)
         {
             Debug.LogWarning("Enemy component not found on this GameObject. Disabling AI.");
-            enabled = false;  // Disable this script if the Enemy component is not found
+            enabled = false; // Disable this script if the Enemy component is not found
             return;
         }
 

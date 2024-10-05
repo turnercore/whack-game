@@ -9,12 +9,22 @@ public class PlayerController : MonoBehaviour
     public int XP { get; private set; }
     public bool IsDead => health.IsDead;
     public int MaxXP => 10;
+
     [Category("Linked Components")]
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Health health;
-    [SerializeField] private PlayerMovement movement;
-    [SerializeField] private Rigidbody2D weaponRigidBody;
-    [SerializeField] private Transform weaponPivot;
+    [SerializeField]
+    private Rigidbody2D rb;
+
+    [SerializeField]
+    private Health health;
+
+    [SerializeField]
+    private PlayerMovement movement;
+
+    [SerializeField]
+    private Rigidbody2D weaponRigidBody;
+
+    [SerializeField]
+    private Transform weaponPivot;
     #endregion
 
     private void Start()
@@ -55,7 +65,11 @@ public class PlayerController : MonoBehaviour
         float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         // Smoothly rotate the weapon using Rigidbody2D
         float currentAngle = weaponRigidBody.rotation;
-        float newAngle = Mathf.LerpAngle(currentAngle, targetAngle, rotateSpeed * Time.fixedDeltaTime);
+        float newAngle = Mathf.LerpAngle(
+            currentAngle,
+            targetAngle,
+            rotateSpeed * Time.fixedDeltaTime
+        );
         // Debug.Log(Mathf.Abs(newAngle - currentAngle) < 0.1f);
         // Apply the new rotation using Rigidbody2D.MoveRotation
         weaponRigidBody.MoveRotation(newAngle);
@@ -122,5 +136,4 @@ public class PlayerController : MonoBehaviour
     {
         EventBus.Instance.TriggerCoinCollected(coins);
     }
-
 }

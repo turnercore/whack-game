@@ -10,28 +10,46 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private float weight = 1.0f;
+    [SerializeField]
+    private float weight = 1.0f;
     public float speed = 1.0f;
     public float damage = 1.0f;
-    [SerializeField] private float wackedTime = 0.5f;
+
+    [SerializeField]
+    private float wackedTime = 0.5f;
     public bool IsWacked = false;
     private bool hasFirstDeathStop = false;
     public float DamageHit { get; private set; }
     public Vector2 DirectionHit { get; private set; }
     public float AddedForceHit { get; private set; }
     public bool IsDead => health.IsDead;
+
     [Header("Linked Components")]
     public Rigidbody2D rb;
-    [SerializeField] private Health health;
-    [SerializeField] private EnemyBrain brain;
-    [SerializeField] private EnemyRotation enemyRotation;
-    [SerializeField] private EnemyDrops enemyDrops;
-    [SerializeField] private GameObject triggerCollider;
-    [SerializeField] private OffScreenChecker offScreenChecker;
-    [SerializeField] private ParticleSystem hitParticles;
-    [SerializeField] private Animator emoteAnimator;
 
+    [SerializeField]
+    private Health health;
 
+    [SerializeField]
+    private EnemyBrain brain;
+
+    [SerializeField]
+    private EnemyRotation enemyRotation;
+
+    [SerializeField]
+    private EnemyDrops enemyDrops;
+
+    [SerializeField]
+    private GameObject triggerCollider;
+
+    [SerializeField]
+    private OffScreenChecker offScreenChecker;
+
+    [SerializeField]
+    private ParticleSystem hitParticles;
+
+    [SerializeField]
+    private Animator emoteAnimator;
 
     #endregion
 
@@ -82,12 +100,18 @@ public class Enemy : MonoBehaviour
         EventBus.Instance.TriggerEnemyDied(this);
     }
 
-    public void Hit(Vector2 direction, float damage, float addedForce = 1.0f, float addedWackedTime = 0.0f)
+    public void Hit(
+        Vector2 direction,
+        float damage,
+        float addedForce = 1.0f,
+        float addedWackedTime = 0.0f
+    )
     {
         // If the enemy is already being hit, ignore the new hit, if it's dead reset IsWacked
         if (IsWacked)
         {
-            if (IsDead) StartCoroutine(ResetIsWacked(0));
+            if (IsDead)
+                StartCoroutine(ResetIsWacked(0));
             return;
         }
 
@@ -98,6 +122,7 @@ public class Enemy : MonoBehaviour
         AddedForceHit = addedForce;
         HandleHit(direction, damage, addedForce);
     }
+
     private void HandleHit(Vector2 direction, float damage, float force = 1.0f)
     {
         // Take damage
@@ -109,8 +134,8 @@ public class Enemy : MonoBehaviour
         {
             hitParticles.Play();
         }
-
     }
+
     private void Wacked(float addedWackedTime = 0.0f)
     {
         IsWacked = true;
@@ -122,7 +147,7 @@ public class Enemy : MonoBehaviour
         }
         // Unfreeze enemy rotation
         enemyRotation.Enable();
-        // Enable other enemy detection 
+        // Enable other enemy detection
         triggerCollider.SetActive(true);
         StartCoroutine(ResetIsWacked(wackedTime + addedWackedTime));
     }
@@ -183,6 +208,7 @@ public class Enemy : MonoBehaviour
         // Re-enable the brain if the off-screen condition was not met
         EnableBrain();
     }
+
     // Enable the brain
     private void EnableBrain()
     {
@@ -191,10 +217,10 @@ public class Enemy : MonoBehaviour
             brain.enabled = true;
         }
     }
+
     // Script to get rid of the enemy, maybe uses pooling, etc.
     private void Unload()
     {
         Destroy(gameObject);
     }
 }
-

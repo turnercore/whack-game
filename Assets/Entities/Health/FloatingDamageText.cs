@@ -1,13 +1,17 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class FloatingDamageText : MonoBehaviour
 {
-    public float floatSpeed = 1f;  // Speed at which the text floats upward
-    public float fadeDuration = 1f;  // Time until text fully fades away
+    public float floatSpeed = 1f; // Speed at which the text floats upward
+    public float fadeDuration = 1f; // Time until text fully fades away
+
     //Text mesh pro text component reference
-    [SerializeField] private TMP_Text damageText;
-    [SerializeField] private Animator anim;
+    [SerializeField]
+    private TMP_Text damageText;
+
+    [SerializeField]
+    private Animator anim;
     private GameObject target;
 
     public void Initialize(float damage, GameObject entity)
@@ -19,7 +23,8 @@ public class FloatingDamageText : MonoBehaviour
     }
 
     // Called in the FloatingText animation event
-    private void DestroySelf() {
+    private void DestroySelf()
+    {
         Destroy(gameObject);
     }
 

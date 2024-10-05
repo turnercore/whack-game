@@ -21,7 +21,11 @@ public class Pickup : MonoBehaviour
         while (Vector2.Distance(transform.position, player.transform.position) > 0.1f)
         {
             // Move towards the player
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, floatSpeed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(
+                transform.position,
+                player.transform.position,
+                floatSpeed * Time.deltaTime
+            );
             yield return null;
         }
 

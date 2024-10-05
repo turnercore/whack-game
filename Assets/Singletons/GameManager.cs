@@ -12,10 +12,12 @@ public class GameManager : MonoBehaviour
     private int Coins = 0;
     public int Score => CalculateScore();
     private GameObject _player;
+
     // Sciptable Object HighScore
     public HighScore highScore;
-    public GameObject Player {
-        get 
+    public GameObject Player
+    {
+        get
         {
             if (_player == null)
             {
@@ -23,13 +25,11 @@ public class GameManager : MonoBehaviour
             }
             return _player;
         }
-        set
-        {
-            _player = value;
-        }
+        set { _player = value; }
     }
 
-    public int GetHighScore() {
+    public int GetHighScore()
+    {
         return highScore.score;
     }
 
@@ -71,30 +71,35 @@ public class GameManager : MonoBehaviour
         timeElapsed = 0f;
     }
 
-    int CalculateScore() {
+    int CalculateScore()
+    {
         return Kills * 100 + Coins * 50 + (int)timeElapsed * 10 + GetPlayerComponent().Level * 1000;
     }
 
     // Clean up
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         // Unsubscribe from the event
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         EventBus.Instance.OnCoinCollected -= OnCoinCollected;
         EventBus.Instance.OnPlayerDied -= GameOver;
     }
 
-    private void Update() {
+    private void Update()
+    {
         if (!IsGamePaused && !IsGameOver && !IsGameWon)
         {
             timeElapsed += Time.deltaTime;
         }
     }
 
-    public int GetKills() {
+    public int GetKills()
+    {
         return Kills;
     }
 
-    public int GetCoins() {
+    public int GetCoins()
+    {
         return Coins;
     }
 
@@ -115,16 +120,18 @@ public class GameManager : MonoBehaviour
         Player = player;
         OnPlayerSet?.Invoke(player);
     }
+
     public GameObject GetPlayerObject()
     {
         return Player;
     }
+
     public PlayerController GetPlayerComponent()
     {
         return Player.GetComponent<PlayerController>();
     }
 
-        // OnPlayerSet Event
+    // OnPlayerSet Event
     public delegate void PlayerSetDelegate(GameObject player);
     public event PlayerSetDelegate OnPlayerSet;
 

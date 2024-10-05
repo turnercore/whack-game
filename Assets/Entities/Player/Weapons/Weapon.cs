@@ -4,11 +4,15 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     // Add array of hit sounds
-    [SerializeField] private AudioClip[] hitSounds;
-    [SerializeField] private ParticleSystem hitParticles;
+    [SerializeField]
+    private AudioClip[] hitSounds;
+
+    [SerializeField]
+    private ParticleSystem hitParticles;
     public float damage = 1.0f;
     public float addedForce = 1.0f;
     public Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,10 +20,13 @@ public class Weapon : MonoBehaviour
         transform.localPosition = offset;
     }
 
-    public void PlayHitEffects() {
+    public void PlayHitEffects()
+    {
         PlayHitSound();
-        if (hitParticles != null) PlayHitParticles();
+        if (hitParticles != null)
+            PlayHitParticles();
     }
+
     // Play a random hit sound from the array, but only if one is not already playing
     void PlayHitSound()
     {
@@ -38,5 +45,4 @@ public class Weapon : MonoBehaviour
     {
         hitParticles.Play();
     }
-
 }

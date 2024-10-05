@@ -18,16 +18,20 @@ public class BlinkController : MonoBehaviour
             health.OnDeath += Die;
         }
     }
+
     public void ChooseBlink()
     {
         // Choose blink animation from 0 to BlinkAnimations - 1
         int blinkIndex = Random.Range(0, BLINK_ANIMATIONS);
         // Set Animator param BlinkIndex to blinkIndex
-        GetComponent<Animator>().SetInteger("BlinkIndex", blinkIndex);
+        GetComponent<Animator>()
+            .SetInteger("BlinkIndex", blinkIndex);
     }
+
     public void Die()
     {
         // Play the Die animation
-        GetComponent<Animator>().SetBool("isDead", true);
+        GetComponent<Animator>()
+            .SetBool("isDead", true);
     }
 }

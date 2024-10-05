@@ -5,18 +5,24 @@ public class HealthBar : MonoBehaviour
 {
     public Transform foreground;
     public Transform background;
-    [SerializeField] private Health health; // Reference to the Health script on the parent object
+
+    [SerializeField]
+    private Health health; // Reference to the Health script on the parent object
     private float y;
     private float z;
     private float x;
-    [SerializeField] private AnimationCurve animationCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField] private float animationDuration = 0.5f; // How long the animation should last
+
+    [SerializeField]
+    private AnimationCurve animationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    [SerializeField]
+    private float animationDuration = 0.5f; // How long the animation should last
 
     void Start()
-    {        
+    {
         // Set the foreground to the max width, height, and z + 1
         // foreground.localScale = new Vector3(background.localScale.x, background.localScale.y, background.localScale.z + 1);
-        
+
         // Get the initial y and z of the health bar foreground background\
         x = foreground.localScale.x;
         y = foreground.localScale.y;
@@ -30,7 +36,6 @@ public class HealthBar : MonoBehaviour
             health.OnDeath += UpdateHealthBarDeath;
             // Sbuscribe to the OnHeal event
             health.OnHeal += UpdateHealthBar;
-
         }
     }
 
@@ -55,29 +60,28 @@ public class HealthBar : MonoBehaviour
         StartCoroutine(AnimateHealthBar(targetWidth));
     }
 
-
-
-    private IEnumerator AnimateHealthBar(float targetWidth){
-    float startWidth = foreground.localScale.y; // Get the current width
-    float elapsed = 0f;
-
-    // Animate over the duration
-    while (elapsed < animationDuration)
+    private IEnumerator AnimateHealthBar(float targetWidth)
     {
-        elapsed += Time.deltaTime;
-        // Evaluate the curve to get the progress
-        float t = elapsed / animationDuration;
-        float curveValue = animationCurve.Evaluate(t);
+        float startWidth = foreground.localScale.y; // Get the current width
+        float elapsed = 0f;
 
-        // Lerp between start and target based on curve value
-        float newWidth = Mathf.Lerp(startWidth, targetWidth, curveValue);
-        foreground.localScale = new Vector3(x, newWidth, z);
+        // Animate over the duration
+        while (elapsed < animationDuration)
+        {
+            elapsed += Time.deltaTime;
+            // Evaluate the curve to get the progress
+            float t = elapsed / animationDuration;
+            float curveValue = animationCurve.Evaluate(t);
 
-        yield return null;
-    }
+            // Lerp between start and target based on curve value
+            float newWidth = Mathf.Lerp(startWidth, targetWidth, curveValue);
+            foreground.localScale = new Vector3(x, newWidth, z);
 
-    // Ensure the final scale is set precisely
-    foreground.localScale = new Vector3(x, targetWidth, z);
+            yield return null;
+        }
+
+        // Ensure the final scale is set precisely
+        foreground.localScale = new Vector3(x, targetWidth, z);
     }
 
     public void UpdateHealthBarDeath()

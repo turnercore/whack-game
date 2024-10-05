@@ -27,12 +27,11 @@ public class EnemyRotation : MonoBehaviour
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         // Start coroutine to smoothly rotate upright
-        if (gameObject.activeInHierarchy) {
+        if (gameObject.activeInHierarchy)
+        {
             StartCoroutine(RotateUpright());
         }
     }
-
-
 
     public void Enable()
     {
@@ -52,7 +51,11 @@ public class EnemyRotation : MonoBehaviour
         while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
         {
             // Rotate towards target rotation gradually
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
             yield return null;
         }
 

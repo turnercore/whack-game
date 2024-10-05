@@ -14,7 +14,7 @@ public class PickupDetector : MonoBehaviour
     {
         // Check if the collider is tagged as "Pickup"
         if (other.CompareTag("Pickup"))
-        {            
+        {
             // Ensure pickup is not null before calling the method
             if (other.TryGetComponent<Pickup>(out var pickup))
             {

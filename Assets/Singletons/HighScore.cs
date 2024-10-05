@@ -23,7 +23,7 @@ public class HighScore : ScriptableObject
         HighScoreData data = new HighScoreData()
         {
             savedScore = score,
-            savedPlayerInitials = _playerInitials
+            savedPlayerInitials = _playerInitials,
         };
 
         string jsonData = JsonUtility.ToJson(data);

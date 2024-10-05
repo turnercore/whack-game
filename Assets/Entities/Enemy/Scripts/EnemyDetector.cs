@@ -15,7 +15,8 @@ public class EnemyDetector : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Ensure the parent enemy is "wacked" and ready to trigger
-        if (!parentEnemy.IsWacked || !other.CompareTag("Enemy")) return;
+        if (!parentEnemy.IsWacked || !other.CompareTag("Enemy"))
+            return;
         // Log the collision
 
         // Check if the collider is an enemy and not the parent
@@ -32,7 +33,8 @@ public class EnemyDetector : MonoBehaviour
                 // Calculate the damage of the hit, should be half of the parent's force damage
                 float forceDamage = parentEnemy.DamageHit * DAMAGE_HIT_REDUCTION;
                 //If damage is less than 0.5, ignore the hit
-                if (forceDamage < 0.5f) return;
+                if (forceDamage < 0.5f)
+                    return;
                 // Calculate added force of the hit, should be half of the parent's added force
                 float addedForce = parentEnemy.AddedForceHit * FORCE_HIT_REDUCTION;
                 // Hit the other enemy
