@@ -59,7 +59,6 @@ public class OffScreenChecker : MonoBehaviour
         // If the object is currently on-screen, trigger the first enter screen event
         if (!hasEnteredScreen && !currentlyOffScreen)
         {
-            Debug.Log("First Enter Screen");
             hasEnteredScreen = true;
             OnFirstEnterScreen?.Invoke();
         }

@@ -13,23 +13,17 @@ public class WackableButton : MonoBehaviour
 
     void Start()
     {
-        if (isInteractable)
-        {
-            // Subscribe to the EventBus OnEnableWackableButtons and OnDisable events
-            EventBus.Instance.OnWackableButtonsEnabled += EnableWackable;
-            EventBus.Instance.OnWackableButtonsDisabled += DisableWackable;
-        }
+        // Subscribe to the EventBus OnEnableWackableButtons and OnDisable events
+        EventBus.Instance.OnWackableButtonsEnabled += EnableWackable;
+        EventBus.Instance.OnWackableButtonsDisabled += DisableWackable;
     }
 
     // Clean Up
     private void OnDestroy()
     {
-        if (isInteractable)
-        {
-            // Unsubscribe from the EventBus OnEnableWackableButtons and OnDisable events
-            EventBus.Instance.OnWackableButtonsEnabled -= EnableWackable;
-            EventBus.Instance.OnWackableButtonsDisabled -= DisableWackable;
-        }
+        // Unsubscribe from the EventBus OnEnableWackableButtons and OnDisable events
+        EventBus.Instance.OnWackableButtonsEnabled -= EnableWackable;
+        EventBus.Instance.OnWackableButtonsDisabled -= DisableWackable;
     }
 
     private void EnableWackable()

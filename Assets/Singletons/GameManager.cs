@@ -116,7 +116,6 @@ public class GameManager : MonoBehaviour
     public void RegisterPlayer(GameObject player)
     {
         // Register the player with the GameManager
-        Debug.Log("Player registered with GameManager.");
         Player = player;
         OnPlayerSet?.Invoke(player);
     }
