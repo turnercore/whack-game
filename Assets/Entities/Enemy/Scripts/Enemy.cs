@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject triggerCollider;
     [SerializeField] private OffScreenChecker offScreenChecker;
     [SerializeField] private ParticleSystem hitParticles;
+    [SerializeField] private Animator emoteAnimator;
 
 
 
@@ -77,7 +79,7 @@ public class Enemy : MonoBehaviour
         // Disable the rotation script
         enemyRotation.Disable();
         // Fire enemy is dead event
-        EventBus.Instance.EnemyDied(this);
+        EventBus.Instance.TriggerEnemyDied(this);
     }
 
     public void Hit(Vector2 direction, float damage, float addedForce = 1.0f, float addedWackedTime = 0.0f)
@@ -112,6 +114,7 @@ public class Enemy : MonoBehaviour
     private void Wacked(float addedWackedTime = 0.0f)
     {
         IsWacked = true;
+        // Change emote once stationary to D
         // Turn off brain when wacked until either off-screen or a short time has passed, unless dead then it will remain disabled
         if (brain != null && brain.enabled && !IsDead)
         {
@@ -162,6 +165,7 @@ public class Enemy : MonoBehaviour
             if (!offScreenChecker.IsOnScreen)
             {
                 EnableBrain();
+                IsWacked = false;
                 yield break;
             }
             if (IsDead)
@@ -193,3 +197,4 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 }
+

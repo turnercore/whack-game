@@ -3,9 +3,11 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     [SerializeField] private int _maxHealth = 5;
-    public float MaxHealth{
+    public float MaxHealth
+    {
         get => (float)_maxHealth;
-        set{
+        set
+        {
             // If new max health is higher than previous max health, get the difference
             float difference = value - _maxHealth;
             // Convert the float value to an integer rounded down (but above 0)
@@ -27,7 +29,7 @@ public class Health : MonoBehaviour
     public delegate void OnTakeDamageDelegate(float damage);
     public event OnTakeDamageDelegate OnTakeDamage;
     [SerializeField] private Animator EyeAnimator;
-    
+
     void Start()
     {
         CurrentHealth = MaxHealth;
@@ -46,7 +48,8 @@ public class Health : MonoBehaviour
         // Run the OnHit event for anything that is subscribed to it
         OnTakeDamage?.Invoke(damage);
         // If the entity has an EyeAnimator Animator component, set the isShocked Trigger
-        if(EyeAnimator != null){
+        if (EyeAnimator != null)
+        {
             EyeAnimator.SetTrigger("isShocked");
         }
         // If the enemy's health reaches 0, do something (e.g., destroy enemy)
@@ -79,7 +82,7 @@ public class Health : MonoBehaviour
     // OnHeal event taking the heal amount float
     public delegate void OnHealDelegate(float amount);
     public event OnHealDelegate OnHeal;
-    
+
 
     public void Revive()
     {

@@ -1,6 +1,4 @@
-using System;
 using System.ComponentModel;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -46,7 +44,7 @@ public class PlayerController : MonoBehaviour
         PivotWeapon();
     }
 
-    private void PivotWeapon() 
+    private void PivotWeapon()
     {
         // Get mouse position in world coordinates
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -69,7 +67,7 @@ public class PlayerController : MonoBehaviour
         XP += xp;
 
         // Trigger the XPChanged event
-        EventBus.Instance.XPChanged();
+        EventBus.Instance.TriggerXPChanged();
 
         // Check if the player has enough xp to level up
         if (XP >= MaxXP)
@@ -85,7 +83,7 @@ public class PlayerController : MonoBehaviour
         Level++;
         // Reset the player's xp to 0
         XP = 0;
-        EventBus.Instance.LevelUp();
+        EventBus.Instance.TriggerLevelUp();
     }
 
     // Detect collisions with Enemies
@@ -100,8 +98,6 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
-            // Get the enemy's health component
-            Health enemyHealth = enemy.GetComponent<Health>();
             // Get the enemy's damage value
             float damage = enemy.damage;
             // Take damage from the enemy
@@ -114,7 +110,7 @@ public class PlayerController : MonoBehaviour
         // Unsubscribe from Health events
         health.OnDeath -= OnDeath;
         // Trigger the player died event
-        EventBus.Instance.PlayerDied();
+        EventBus.Instance.TriggerPlayerDied();
     }
 
     public void Heal(float amount)
@@ -124,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
     public void AddCoins(int coins)
     {
-        EventBus.Instance.CoinCollected(coins);
+        EventBus.Instance.TriggerCoinCollected(coins);
     }
-    
+
 }

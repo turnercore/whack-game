@@ -1,31 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WackableButton : MonoBehaviour
 {
+    [SerializeField] private ButtonTypes buttonType;
     private bool isWackable = false;
-    // Start is called before the first frame update
+    private bool isWacked = false;
+
     void Start()
     {
-        // Subscribe to the EventBus, OnEnableWackableButtons event
-
+        // Subscribe to the EventBus OnEnableWackableButtons and OnDisable events
+        EventBus.Instance.OnWackableButtonsEnabled += EnableWackable;
+        EventBus.Instance.OnWackableButtonsDisabled += DisableWackable;
     }
 
-    // Update is called once per frame
-    void Update()
+    // Clean Up
+    private void OnDestroy()
     {
-
+        EventBus.Instance.OnWackableButtonsEnabled -= EnableWackable;
+        EventBus.Instance.OnWackableButtonsDisabled -= DisableWackable;
     }
-}
 
-public enum ButtonTypes
-{
-    Play,
-    Quit,
-    Resume,
-    Restart,
-    MainMenu,
-    Options,
-    Credits
+    private void EnableWackable()
+    {
+        isWackable = true;
+    }
+
+    private void DisableWackable()
+    {
+        isWackable = false;
+    }
+
+    // When the button gets wacked (collides with player weapon, aka weapon tag) it will trigger the event
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isWackable && collision.collider.CompareTag("Weapon") && !isWacked)
+        {
+            isWacked = true;
+            EventBus.Instance.TriggerButtonWacked(buttonType);
+        }
+    }
 }

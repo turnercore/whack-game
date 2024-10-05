@@ -4928,7 +4928,7 @@ GameObject:
   - component: {fileID: 4045845205797329612}
   m_Layer: 3
   m_Name: Batguette
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5003,10 +5003,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 79230531c60d91f45864a10e13377139, type: 3}
   - {fileID: 8300000, guid: e77fdcf229c37f44696c587ad27c426f, type: 3}
   - {fileID: 8300000, guid: 6f24cdca6b9956141baf9d82ce0b4eca, type: 3}
+  hitParticles: {fileID: 8660106796160072391}
   damage: 1
   addedForce: 0
   offset: {x: 1.5, y: 0, z: 0}
-  hitParticles: {fileID: 8660106796160072391}
 --- !u!82 &4045845205797329612
 AudioSource:
   m_ObjectHideFlags: 0

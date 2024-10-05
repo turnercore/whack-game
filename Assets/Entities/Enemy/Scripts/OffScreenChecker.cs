@@ -8,10 +8,12 @@ public class OffScreenChecker : MonoBehaviour
     public float offScreenPercentage = 0.35f;  // Percentage of screen size to be considered off-screen
     private Rigidbody2D rb;
     private bool isOnScreen = true;            // Tracks whether the object is currently on-screen
-
+    public bool hasEnteredScreen = false;     // Tracks whether the object has entered the screen ever
     public delegate void OffScreenEvent(bool isOffScreen);
     public event OffScreenEvent OnScreenStatusChanged; // Event fired when the screen status changes
-
+    // Event for the first time the enemy enters the camera
+    public delegate void OnFirstEnterScreenEvent();
+    public event OnFirstEnterScreenEvent OnFirstEnterScreen;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,6 +52,14 @@ public class OffScreenChecker : MonoBehaviour
         {
             isOnScreen = !currentlyOffScreen;
             OnScreenStatusChanged?.Invoke(!isOnScreen);
+        }
+
+        // If the object is currently on-screen, trigger the first enter screen event
+        if (!hasEnteredScreen && !currentlyOffScreen)
+        {
+            Debug.Log("First Enter Screen");
+            hasEnteredScreen = true;
+            OnFirstEnterScreen?.Invoke();
         }
     }
 
