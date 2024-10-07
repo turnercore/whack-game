@@ -254,6 +254,7 @@ MonoBehaviour:
   movement: {fileID: 659280112061831102}
   weaponRigidBody: {fileID: 3041101233133407289}
   weaponPivot: {fileID: 7413147845315022202}
+  weaponSlot: {fileID: 935783367428642416}
 --- !u!114 &5245532339694606750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +360,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa5751f6ae3336a4ca7cdada2f7dd9a1, type: 3}
+--- !u!114 &935783367428642416 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3095726000108569262, guid: fa5751f6ae3336a4ca7cdada2f7dd9a1, type: 3}
+  m_PrefabInstance: {fileID: 2741188483210286302}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58622a58e36040e429cbf3e05a7b2003, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &3041101233133407289 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 882284497407531239, guid: fa5751f6ae3336a4ca7cdada2f7dd9a1, type: 3}

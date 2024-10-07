@@ -25,6 +25,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private Transform weaponPivot;
+
+    [SerializeField]
+    private WeaponSlot weaponSlot;
     #endregion
 
     private void Start()
@@ -135,5 +138,10 @@ public class PlayerController : MonoBehaviour
     public void AddCoins(int coins)
     {
         EventBus.Instance.TriggerCoinCollected(coins);
+    }
+
+    public void AddWeapon(GameObject weapon)
+    {
+        weaponSlot.SetWeapon(weapon);
     }
 }
