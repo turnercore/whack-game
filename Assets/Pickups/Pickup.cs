@@ -4,10 +4,14 @@ using UnityEngine;
 public class Pickup : MonoBehaviour
 {
     // The speed at which the pickup will float towards the player
-    public float floatSpeed = 5f;
+    [SerializeField]
+    protected float floatSpeed = 5f;
+
+    [SerializeField]
+    protected AudioClip pickupSound;
 
     // Called when the pickup is collected by a player
-    public virtual void PickupItem(GameObject player)
+    public void TriggerPickup(GameObject player)
     {
         // This is the default behavior for floating to the player
         // You can override this method in derived classes if needed
@@ -36,7 +40,18 @@ public class Pickup : MonoBehaviour
     // This function can be overridden by derived classes to define what happens when the pickup reaches the player
     protected virtual void OnReachPlayer(GameObject player)
     {
+        // Play the pickup sound if it exists
+        PlayPickupSound();
         // Destroy the pickup object by default
         Destroy(gameObject);
+    }
+
+    // Play the pickup sound if it exists
+    protected void PlayPickupSound()
+    {
+        if (pickupSound != null)
+        {
+            EventBus.Instance.TriggerAudioSFXPlayed(pickupSound, gameObject.GetInstanceID());
+        }
     }
 }

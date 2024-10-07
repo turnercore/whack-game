@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6655852972418666160}
   - component: {fileID: 3825794224118351936}
   - component: {fileID: 2204642888682414571}
-  - component: {fileID: 5044128906347846347}
+  - component: {fileID: 1773338730843805607}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -93,7 +93,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955695179669085982}
   m_Enabled: 1
---- !u!114 &5044128906347846347
+--- !u!114 &1773338730843805607
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,9 +105,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a09367a4c4d1be428aff3ca92d1b7ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFrozen: 1
   shakeDuration: 0.5
   shakeMagnitude: 0.5
-  followSpeed: 3
-  deadzone: 1
-  floatyAmount: 0
-  floatySpeed: 0
+  followSpeed: 5
+  deadzone: 0.5
+  floatyAmount: 0.02
+  floatySpeed: 0.2
+  offset: {x: 0, y: 0, z: 0}
+  zoomTransitionTime: 1
+  zoomedInSize: 3
+  zoomedOutSize: 7.2
+  idleThreshold: 1
+  targetTransitionSpeed: 2
+  isInMenu: 1
+  menuPosition: {x: 0, y: 0, z: 0}
+  menuZoom: 0

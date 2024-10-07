@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponPickup : Pickup
@@ -23,9 +21,10 @@ public class WeaponPickup : Pickup
     // on reach player, add weapon to player
     protected override void OnReachPlayer(GameObject player)
     {
+        // Play Sound Effect
+        PlayPickupSound();
         // Add the weapon to the player
         player.GetComponent<PlayerController>().AddWeapon(weapon);
-
         // Destroy the pickup object
         Destroy(gameObject);
     }

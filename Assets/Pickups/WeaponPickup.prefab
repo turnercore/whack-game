@@ -165,5 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441e59942b92140e9b38ad7e18cc78e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floatSpeed: 5
+  pickupSound: {fileID: 8300000, guid: 24d015bcf1a764b7883e8ae460649a59, type: 3}
   weapon: {fileID: 5362099585450000946, guid: 733426b9034759c42ada0e76336a45d6, type: 3}
   sprite: {fileID: 5108658844307659867}

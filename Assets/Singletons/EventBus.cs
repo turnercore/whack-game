@@ -99,4 +99,10 @@ public class EventBus : MonoBehaviour
     public event Action OnCameraZoomOut;
 
     public void TriggerCameraZoomOut() => OnCameraZoomOut?.Invoke();
+
+    // Audio events
+    public event Action<AudioClip, int> OnAudioSFXPlayed;
+
+    public void TriggerAudioSFXPlayed(AudioClip sfx, int triggeringObjectId) =>
+        OnAudioSFXPlayed?.Invoke(sfx, triggeringObjectId);
 }

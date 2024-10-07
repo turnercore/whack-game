@@ -19,7 +19,7 @@ public class PickupDetector : MonoBehaviour
             if (other.TryGetComponent<Pickup>(out var pickup))
             {
                 // Call the Pickup method, passing this gameObject as the player
-                pickup.PickupItem(GameManager.Instance.GetPlayerObject());
+                pickup.TriggerPickup(GameManager.Instance.GetPlayerObject());
             }
         }
     }
