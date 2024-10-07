@@ -899,6 +899,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410276339}
+  - component: {fileID: 410276340}
   m_Layer: 0
   m_Name: Screens
   m_TagString: Untagged
@@ -924,6 +925,19 @@ Transform:
   - {fileID: 454978039}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &410276340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410276338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32afe5408e4024aef9405198c178950d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screens: []
 --- !u!4 &418903957 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2022027708114017020, guid: b7fce2b1976ea434bb444d8b1be41fa9, type: 3}
@@ -1589,6 +1603,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1303626081}
+  - component: {fileID: 1303626082}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -1612,6 +1627,18 @@ Transform:
   - {fileID: 1211789855}
   m_Father: {fileID: 410276339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1303626082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303626080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7680802398e7b40d5a67cd72f0d8973d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1376632185
 GameObject:
   m_ObjectHideFlags: 0
