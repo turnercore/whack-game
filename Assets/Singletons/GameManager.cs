@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     private int Coins = 0;
     public int Score => CalculateScore();
     private GameObject _player;
+    public ScreenManager screenManager;
 
     // Sciptable Object HighScore
     public HighScore highScore;
