@@ -38,69 +38,26 @@ public class CameraController : MonoBehaviour
 
     [SerializeField]
     private float idleThreshold = 1f;
-    private Vector3 targetPosition;
-    private Transform playerTransform;
+
+    [SerializeField]
+    private float targetTransitionSpeed = 2f;
+
+    private Transform playerTransform => GameManager.Instance.GetPlayerObject().transform;
     private float playerIdleTime = 0f;
     private Vector3 lastPlayerPosition;
     private bool isIdle = false;
     public bool isInMenu = false;
 
-    private Coroutine zoomCoroutine;
+    private Coroutine transitionCoroutine;
+    private Vector3 currentTarget;
     private float zoomElapsedTime = 0f;
-
-    [SerializeField]
-    private bool _zoomIn = false;
-    public bool zoomIn
-    {
-        get { return _zoomIn; }
-        set
-        {
-            _zoomIn = value;
-            _zoomOut = !value;
-
-            // Reset and start coroutine if necessary
-            if (zoomCoroutine != null)
-            {
-                StopCoroutine(zoomCoroutine);
-            }
-            zoomCoroutine = StartCoroutine(ZoomToSize(zoomedInSize));
-        }
-    }
-
-    [SerializeField]
-    private bool _zoomOut = false;
-    public bool zoomOut
-    {
-        get { return _zoomOut; }
-        set
-        {
-            _zoomOut = value;
-            _zoomIn = !value;
-
-            // Reset and start coroutine if necessary
-            if (zoomCoroutine != null)
-            {
-                StopCoroutine(zoomCoroutine);
-            }
-            float targetSize = isInMenu ? menuZoom : zoomedOutSize;
-            zoomCoroutine = StartCoroutine(ZoomToSize(targetSize));
-        }
-    }
-
-    private Vector3 menuPosition;
-    private float menuZoom;
-    private Quaternion menuRotation;
+    public Vector3 menuPosition = new(0, 0, -10);
+    public float menuZoom = 7.2f;
 
     private void Start()
     {
-        playerTransform = GameManager.Instance.GetPlayerObject().transform;
         lastPlayerPosition = playerTransform.position;
-        // Record the starting position, zoom, and rotation of the camera and save it for menus
-        menuPosition = transform.position;
-        menuZoom = GetComponent<Camera>().orthographicSize;
-        menuRotation = transform.rotation;
-        //Snap zoomed in on player to start
-        SnapZoomInOnPlayer();
+        currentTarget = transform.position;
     }
 
     private void LateUpdate()
@@ -112,55 +69,23 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    // Set to immedetly zoomed in on player function
-    public void SnapZoomInOnPlayer()
-    {
-        _zoomIn = true;
-        _zoomOut = false;
-        transform.position = new Vector3(
-            playerTransform.position.x,
-            playerTransform.position.y,
-            -10
-        );
-        GetComponent<Camera>().orthographicSize = 3f;
-    }
-
-    // Set to immedetly zoomed out on player function
-    public void SnapZoomOutOnPlayer()
-    {
-        _zoomOut = true;
-        _zoomIn = false;
-        transform.position = new Vector3(
-            playerTransform.position.x,
-            playerTransform.position.y,
-            -10
-        );
-        GetComponent<Camera>().orthographicSize = 7.2f;
-    }
-
     private void FollowPlayerWithDeadzone()
     {
         Vector3 playerPosition = playerTransform.position;
         Vector3 camPosition = transform.position - offset;
 
-        // Calculate the distance between the camera position and the player position
         float distanceX = Mathf.Abs(playerPosition.x - camPosition.x);
         float distanceY = Mathf.Abs(playerPosition.y - camPosition.y);
 
-        // If the player is outside the deadzone, move the camera towards the player
         if (distanceX > deadzone || distanceY > deadzone)
         {
-            targetPosition = Vector3.Lerp(
+            Vector3 targetPosition = Vector3.Lerp(
                 camPosition,
                 playerPosition,
                 followSpeed * Time.deltaTime
             );
-            transform.position = new Vector3(
-                targetPosition.x + offset.x,
-                targetPosition.y + offset.y,
-                -10
-            );
-            playerIdleTime = 0f; // Reset idle time since player is moving
+            SetTarget(targetPosition + offset, zoomedOutSize, false);
+            playerIdleTime = 0f;
             isIdle = false;
         }
     }
@@ -201,7 +126,11 @@ public class CameraController : MonoBehaviour
                 transform.position.y + floatyOffsetY,
                 transform.position.z
             );
-            transform.position = Vector3.Lerp(transform.position, floatyTarget, Time.deltaTime);
+            transform.position = Vector3.Lerp(
+                transform.position,
+                new Vector3(floatyTarget.x, floatyTarget.y, -10),
+                Time.deltaTime
+            );
         }
     }
 
@@ -225,7 +154,7 @@ public class CameraController : MonoBehaviour
             float x = Random.Range(-1f, 1f) * magnitude;
             float y = Random.Range(-1f, 1f) * magnitude;
 
-            transform.position = new Vector3(originalPos.x + x, originalPos.y + y, originalPos.z);
+            transform.position = new Vector3(originalPos.x + x, originalPos.y + y, -10);
 
             elapsed += Time.deltaTime;
 
@@ -240,55 +169,69 @@ public class CameraController : MonoBehaviour
         StopAllCoroutines();
     }
 
-    // Freeze camera movement
-    public void Freeze()
+    public void SetTarget(Vector3 targetPosition, float targetZoom, bool isZoomIn)
     {
-        isFrozen = true;
+        targetPosition.z = -10; // Ensure the z-axis is always -10
+        if (transitionCoroutine != null)
+        {
+            StopCoroutine(transitionCoroutine);
+        }
+        transitionCoroutine = StartCoroutine(
+            SmoothTransition(targetPosition, targetZoom, isZoomIn)
+        );
     }
 
-    // Unfreeze camera movement
-    public void Unfreeze()
-    {
-        isFrozen = false;
-    }
-
-    private IEnumerator ZoomToSize(float targetZoom)
+    private IEnumerator SmoothTransition(Vector3 targetPosition, float targetZoom, bool isZoomIn)
     {
         float startZoom = GetComponent<Camera>().orthographicSize;
         Vector3 startPosition = transform.position;
-        Quaternion startRotation = transform.rotation;
 
-        // Target values for position and rotation depending on menu state
-        Vector3 targetPosition = isInMenu
-            ? menuPosition
-            : new Vector3(playerTransform.position.x, playerTransform.position.y, -10);
-        Quaternion targetRotation = isInMenu ? menuRotation : Quaternion.identity;
+        float elapsed = 0f;
 
-        zoomElapsedTime = 0f;
-
-        while (zoomElapsedTime < zoomTransitionTime)
+        while (elapsed < zoomTransitionTime)
         {
-            zoomElapsedTime += Time.deltaTime;
-            float t = zoomElapsedTime / zoomTransitionTime;
+            elapsed += Time.deltaTime;
+            float t = elapsed / zoomTransitionTime;
+            t = Mathf.SmoothStep(0f, 1f, t);
 
-            // Smoothly interpolate the zoom based on time
+            // Interpolate the position smoothly
+            currentTarget = Vector3.Lerp(startPosition, targetPosition, t);
+            transform.position = currentTarget;
+
+            // Interpolate the zoom smoothly
             GetComponent<Camera>().orthographicSize = Mathf.Lerp(startZoom, targetZoom, t);
-
-            // Smoothly interpolate the position
-            transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-
-            // Smoothly interpolate the rotation
-            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, t);
 
             yield return null;
         }
 
-        // Ensure we hit the target values exactly at the end
-        GetComponent<Camera>().orthographicSize = targetZoom;
+        // Set to exact target values
         transform.position = targetPosition;
-        transform.rotation = targetRotation;
+        GetComponent<Camera>().orthographicSize = targetZoom;
 
-        // Reset the coroutine reference to indicate it's completed
-        zoomCoroutine = null;
+        transitionCoroutine = null;
+
+        if (isZoomIn)
+            EventBus.Instance.TriggerCameraZoomIn();
+        else
+            EventBus.Instance.TriggerCameraZoomOut();
+    }
+
+    public void ZoomIn(Vector3 targetPosition)
+    {
+        SetTarget(targetPosition, zoomedInSize, true);
+    }
+
+    public void ZoomOut(Vector3 targetPosition)
+    {
+        SetTarget(targetPosition, zoomedOutSize, false);
+    }
+
+    public void SnapToPlayer()
+    {
+        transform.position = new Vector3(
+            playerTransform.position.x + offset.x,
+            playerTransform.position.y + offset.y,
+            -10
+        );
     }
 }

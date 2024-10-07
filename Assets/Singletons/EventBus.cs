@@ -90,4 +90,13 @@ public class EventBus : MonoBehaviour
     public event Action<ButtonTypes> OnButtonWacked;
 
     public void TriggerButtonWacked(ButtonTypes buttonType) => OnButtonWacked?.Invoke(buttonType);
+
+    // Camera events
+    public event Action OnCameraZoomIn;
+
+    public void TriggerCameraZoomIn() => OnCameraZoomIn?.Invoke();
+
+    public event Action OnCameraZoomOut;
+
+    public void TriggerCameraZoomOut() => OnCameraZoomOut?.Invoke();
 }

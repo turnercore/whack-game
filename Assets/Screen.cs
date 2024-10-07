@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class Screen : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // The point on the screen where the player should be when screen turns on
+    public Transform playerReferencePoint;
+    public bool isMenuScreen = true;
 }
