@@ -13,7 +13,7 @@ public class WackableButton : MonoBehaviour
     private bool isWacked = false;
 
     [SerializeField]
-    private float wackedDelay = 0.5f;
+    private float wackedDelay = 1f;
 
     void Start()
     {
@@ -43,20 +43,18 @@ public class WackableButton : MonoBehaviour
     // When the button gets wacked (collides with player weapon, aka weapon tag) it will trigger the event
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isInteractable)
+        if (isInteractable && !isWacked && collision.gameObject.CompareTag("Weapon"))
         {
-            if (isWackable && collision.collider.CompareTag("Weapon") && !isWacked)
-            {
-                isWacked = true;
-                //Trigger on delay to allow for animation
-                StartCoroutine(TriggerWackedEvent());
-            }
+            //Trigger on delay to allow for animation
+            StartCoroutine(TriggerWackedEvent());
         }
     }
 
     private IEnumerator TriggerWackedEvent()
     {
         yield return new WaitForSeconds(wackedDelay);
+        Debug.Log("Button Wacked: " + buttonType);
         EventBus.Instance.TriggerButtonWacked(buttonType);
+        isWacked = true;
     }
 }

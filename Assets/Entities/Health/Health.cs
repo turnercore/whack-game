@@ -105,4 +105,9 @@ public class Health : MonoBehaviour
         // Clamp the value between 0 and MaxHealth
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
     }
+
+    public void ResetHealth()
+    {
+        CurrentHealth = MaxHealth;
+    }
 }

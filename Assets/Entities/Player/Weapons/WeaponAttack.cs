@@ -28,7 +28,8 @@ public class WeaponAttack : MonoBehaviour
 
     void HitEnemy(Collision2D enemy)
     {
-        // Debug.Log("Hit the enemy with force: " + other.relativeVelocity.magnitude);
+        // Play the hit sound
+        Weapon.PlayHitEffects();
         // See if the collision as t a minimum force
         if (enemy.relativeVelocity.magnitude < MIN_FORCE_OF_IMPACT)
         {
@@ -40,8 +41,5 @@ public class WeaponAttack : MonoBehaviour
         // Get the enemy's Rigidbody2D and enemy weight from its script
         Rigidbody2D enemyRb = enemy.collider.GetComponent<Rigidbody2D>();
         enemy.collider.GetComponent<Enemy>().Hit(direction, Weapon.damage, Weapon.addedForce);
-
-        // Play the hit sound
-        Weapon.PlayHitEffects();
     }
 }

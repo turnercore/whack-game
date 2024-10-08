@@ -23,15 +23,7 @@ public class MenuScreenBarrier : MonoBehaviour
         UpdateEdgeCollider();
     }
 
-    private void Update()
-    {
-        if (ScreenSizeChanged())
-        {
-            UpdateEdgeCollider();
-        }
-    }
-
-    private void UpdateEdgeCollider()
+    public void UpdateEdgeCollider()
     {
         Vector2 screenBottomLeft = Camera.main.ScreenToWorldPoint(
             new Vector3(0, 0, Camera.main.nearClipPlane)
@@ -47,9 +39,9 @@ public class MenuScreenBarrier : MonoBehaviour
         Vector2[] edgePoints = new Vector2[]
         {
             screenBottomLeft, // Bottom-left corner
-            new Vector2(screenBottomLeft.x, screenTopRight.y), // Top-left corner
+            new(screenBottomLeft.x, screenTopRight.y), // Top-left corner
             screenTopRight, // Top-right corner
-            new Vector2(screenTopRight.x, screenBottomLeft.y), // Bottom-right corner
+            new(screenTopRight.x, screenBottomLeft.y), // Bottom-right corner
             screenBottomLeft // Closing the loop
             ,
         };
@@ -57,17 +49,17 @@ public class MenuScreenBarrier : MonoBehaviour
         edgeCollider.points = edgePoints;
     }
 
-    private bool ScreenSizeChanged()
-    {
-        Vector2 currentScreenSize = new Vector2(
-            UnityEngine.Screen.width,
-            UnityEngine.Screen.height
-        );
-        if (currentScreenSize != lastScreenSize)
-        {
-            lastScreenSize = currentScreenSize;
-            return true;
-        }
-        return false;
-    }
+    // public bool ScreenSizeChanged()
+    // {
+    //     Vector2 currentScreenSize = new Vector2(
+    //         UnityEngine.Screen.width,
+    //         UnityEngine.Screen.height
+    //     );
+    //     if (currentScreenSize != lastScreenSize)
+    //     {
+    //         lastScreenSize = currentScreenSize;
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }

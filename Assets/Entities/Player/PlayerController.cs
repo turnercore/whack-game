@@ -144,4 +144,11 @@ public class PlayerController : MonoBehaviour
     {
         weaponSlot.SetWeapon(weapon);
     }
+
+    public void ResetPlayer()
+    {
+        XP = 0;
+        Level = 1;
+        health.ResetHealth();
+    }
 }

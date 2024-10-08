@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,8 +12,27 @@ public class GameManager : MonoBehaviour
     private int Kills = 0;
     private int Coins = 0;
     public int Score => CalculateScore();
+
+    [SerializeField]
     private GameObject _player;
     public ScreenManager screenManager;
+    private string _playerName;
+    public string PlayerName
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_playerName))
+            {
+                _playerName = "TCM";
+            }
+            return _playerName;
+        }
+        set
+        {
+            // Set it to the string, but strip all spaces, only take the first 3 letters, and make them uppercase
+            _playerName = value.Replace(" ", "")[..3].ToUpper();
+        }
+    }
 
     // Sciptable Object HighScore
     public HighScore highScore;
@@ -53,18 +73,15 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        InitializeGame();
-
         // Subscribe to EventBus OnEnenmyDied event
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
         EventBus.Instance.OnCoinCollected += OnCoinCollected;
         EventBus.Instance.OnPlayerDied += GameOver;
 
-        // Load the high score data
-        highScore.LoadData();
-
         // Buttons event subscription
         EventBus.Instance.OnButtonWacked += OnButtonWacked;
+
+        InitializeGame();
     }
 
     void InitializeGame()
@@ -76,6 +93,14 @@ public class GameManager : MonoBehaviour
         Kills = 0;
         Coins = 0;
         timeElapsed = 0f;
+
+        // Reset the player's position
+        Player.SetActive(true);
+        Player.transform.position = Vector3.zero;
+        Player.GetComponent<PlayerController>().ResetPlayer();
+
+        // Change to the menu screen
+        screenManager.LoadScreen(ButtonTypes.MainMenu);
     }
 
     int CalculateScore()
@@ -148,23 +173,18 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         IsGameOver = true;
-        UpdateHighScore();
+        UpdateHighScore(Score, PlayerName);
         OnGameOver?.Invoke();
     }
 
-    private void UpdateHighScore()
+    private void UpdateHighScore(int score, string name)
     {
-        if (Score > highScore.score)
+        if (score > highScore.score)
         {
-            highScore.score = Score;
+            highScore.score = score;
+            highScore.PlayerInitials = name;
+            highScore.SaveData();
         }
-        highScore.SaveData();
-    }
-
-    private void UpdateHighScorePlayer(string name)
-    {
-        highScore.PlayerInitials = name;
-        highScore.SaveData();
     }
 
     private void OnButtonWacked(ButtonTypes buttonType)
@@ -181,7 +201,20 @@ public class GameManager : MonoBehaviour
                 RestartGame();
                 break;
             case ButtonTypes.Quit:
+                Debug.Log("Quit Game");
                 QuitGame();
+                break;
+            case ButtonTypes.MainMenu:
+                screenManager.LoadScreen(ButtonTypes.MainMenu);
+                break;
+            case ButtonTypes.Play:
+                screenManager.LoadScreen(ButtonTypes.Play);
+                break;
+            case ButtonTypes.Options:
+                screenManager.LoadScreen(ButtonTypes.Options);
+                break;
+            case ButtonTypes.Credits:
+                screenManager.LoadScreen(ButtonTypes.Credits);
                 break;
         }
     }
@@ -208,13 +241,17 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 
     public void GameWon()
     {
         IsGameWon = true;
-        UpdateHighScore();
+        UpdateHighScore(Score, PlayerName);
         EventBus.Instance.TriggerGameWon();
     }
 }

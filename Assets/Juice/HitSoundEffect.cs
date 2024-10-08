@@ -10,11 +10,11 @@ public class HitSoundEffect : Juice
     // 2D collider
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Ignore edge colliders, inactive states, or low-velocity collisions
+        // Ignore edge colliders, inactive states, low-velocity collisions, or collisions with weapons
         if (
-            collision.collider is EdgeCollider2D
-            || !isActive
+            !isActive
             || collision.relativeVelocity.magnitude < 0.1f
+            || collision.collider.CompareTag("Weapon") // Ignore collisions with weapons
         )
             return;
 
@@ -35,7 +35,7 @@ public class HitSoundEffect : Juice
             return;
         }
 
-        // Play sound if hit by a weapon or if not limited to weapon hits
+        // Play sound if hit by a non-weapon or if not limited to weapon hits
         if (!onlyOnWeaponHit || collision.collider.CompareTag("Weapon"))
         {
             // Play a random sound from the array

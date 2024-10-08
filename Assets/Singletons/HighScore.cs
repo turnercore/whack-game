@@ -38,8 +38,8 @@ public class HighScore : ScriptableObject
             string jsonData = File.ReadAllText(FilePath);
             HighScoreData data = JsonUtility.FromJson<HighScoreData>(jsonData);
 
-            this.score = data.savedScore;
-            this._playerInitials = data.savedPlayerInitials;
+            score = data.savedScore;
+            PlayerInitials = data.savedPlayerInitials;
         }
     }
 

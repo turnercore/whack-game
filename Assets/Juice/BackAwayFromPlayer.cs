@@ -2,31 +2,43 @@ using UnityEngine;
 
 public class BackAwayFromPlayer : Juice
 {
-    public float retreatSpeed = 2f; // Speed at which the object retreats
+    public float retreatForce = 200f; // Force to apply when retreating
     public float retreatDistance = 5f; // Maximum distance to retreat away from the player
 
-    private Transform playerTransform;
-    private Vector3 originalPosition;
+    private Transform playerTransform => GameManager.Instance.Player.transform;
+    private Rigidbody2D rb;
+    private bool isRetreating;
 
     void Start()
     {
-        // Store the original position of the object to know when it has retreated sufficiently
-        originalPosition = transform.position;
+        if (juiceTarget == null)
+        {
+            Debug.LogError("Juice Target not set!");
+        }
+        rb = juiceTarget.GetComponent<Rigidbody2D>();
+        if (rb == null)
+        {
+            Debug.LogError("No Rigidbody2D found on the GameObject!");
+        }
     }
 
     void Update()
     {
-        if (isActive && playerTransform != null)
+        if (isRetreating && playerTransform != null && rb != null)
         {
-            // Calculate direction away from the player
+            // Calculate the direction away from the player
             Vector3 directionAway = (transform.position - playerTransform.position).normalized;
-            Vector3 targetPosition =
-                transform.position + directionAway * retreatSpeed * Time.deltaTime;
 
-            // Only retreat if within retreat distance from the original position
-            if (Vector3.Distance(originalPosition, targetPosition) <= retreatDistance)
+            // Apply force in the opposite direction of the player
+            if (Vector3.Distance(playerTransform.position, transform.position) <= retreatDistance)
             {
-                transform.position = targetPosition;
+                rb.AddForce(directionAway * retreatForce * Time.deltaTime, ForceMode2D.Force);
+            }
+            else
+            {
+                // Stop retreating once the object is beyond the retreat distance
+                isRetreating = false;
+                rb.velocity = Vector2.zero; // Stop any movement
             }
         }
     }
@@ -36,8 +48,7 @@ public class BackAwayFromPlayer : Juice
         // Check if the player has entered the trigger
         if (other.CompareTag("Player"))
         {
-            isActive = true;
-            playerTransform = other.transform;
+            isRetreating = true;
         }
     }
 
@@ -46,8 +57,8 @@ public class BackAwayFromPlayer : Juice
         // Check if the player has exited the trigger
         if (other.CompareTag("Player"))
         {
-            isActive = false;
-            playerTransform = null;
+            isRetreating = false;
+            rb.velocity = Vector2.zero; // Stop any movement
         }
     }
 }
