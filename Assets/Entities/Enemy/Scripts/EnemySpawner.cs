@@ -11,9 +11,19 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(SpawnEnemy());
         // Subscribe to enemy died event
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
+    }
+
+    void OnEnable()
+    {
+        StartCoroutine(SpawnEnemy());
+        // Subscribe to enemy died event
+    }
+
+    void OnDisable()
+    {
+        StopAllCoroutines();
     }
 
     // Clean up

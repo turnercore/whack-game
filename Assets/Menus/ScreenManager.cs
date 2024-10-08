@@ -42,6 +42,7 @@ public class ScreenManager : MonoBehaviour
     public void ZoomTransition(ScreenType newScreen)
     {
         // Set the transition screen
+        menuScreenBarrier.gameObject.SetActive(false);
         transitionScreen = newScreen;
         cameraController.ZoomIn(GameManager.Instance.Player.transform.position);
         EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
@@ -133,6 +134,11 @@ public class ScreenManager : MonoBehaviour
 
         // Set the transition screen to null
         transitionScreen = ScreenType.None;
+
+        if (!currentScreenObject.isMenuScreen)
+        {
+            menuScreenBarrier.gameObject.SetActive(false);
+        }
     }
 
     public void TransitionToScreen(ScreenType screen)
