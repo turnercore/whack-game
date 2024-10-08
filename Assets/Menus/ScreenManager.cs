@@ -5,7 +5,8 @@ using UnityEngine;
 public class ScreenManager : MonoBehaviour
 {
     // List of all the screens
-    public List<Screen> screens = new();
+    [SerializeField]
+    private List<Screen> screens = new();
 
     [SerializeField]
     private CameraController cameraController;
@@ -13,8 +14,10 @@ public class ScreenManager : MonoBehaviour
     [SerializeField]
     private LevelManager levelManager;
 
-    private Screen currentScreen;
-    private Screen transitionScreen;
+    private ScreenType currentScreen = ScreenType.None;
+    private Screen currentScreenObject => screens[(int)currentScreen - 1];
+    private ScreenType transitionScreen = ScreenType.None;
+    private Screen transitionScreenObject => screens[(int)transitionScreen - 1];
 
     [SerializeField]
     private MenuScreenBarrier menuScreenBarrier;
@@ -33,10 +36,10 @@ public class ScreenManager : MonoBehaviour
         GameManager.Instance.screenManager = this;
 
         // Activate the first screen
-        ZoomTransition(screens[0]);
+        ZoomTransition(ScreenType.MainMenu);
     }
 
-    public void ZoomTransition(Screen newScreen)
+    public void ZoomTransition(ScreenType newScreen)
     {
         // Set the transition screen
         transitionScreen = newScreen;
@@ -44,40 +47,18 @@ public class ScreenManager : MonoBehaviour
         EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
     }
 
-    public void LoadScreen(ButtonTypes buttonType)
+    public void LoadScreen(ScreenType screenType)
     {
-        Screen newScreen = null;
-        switch (buttonType)
-        {
-            case ButtonTypes.Play:
-                StartGame();
-                break;
-            case ButtonTypes.MainMenu:
-                TransitionToScreen(screens[(int)ScreenType.MainMenu]);
-                break;
-            case ButtonTypes.Options:
-                break;
-            case ButtonTypes.Credits:
-                break;
-            case ButtonTypes.Pause:
-                break;
-        }
-
-        if (newScreen != null)
-        {
-            ZoomTransition(newScreen);
-        }
+        // Set the transition screen
+        transitionScreen = screenType;
+        cameraController.ZoomIn(cameraController.menuPosition);
+        EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
     }
 
     private void StartGame()
     {
-        // Change to no screen
-        currentScreen = null;
-        UnloadScreens();
-        levelManager.gameObject.SetActive(true);
-        levelManager.enabled = true;
-        menuScreenBarrier.gameObject.SetActive(false);
-        menuScreenBarrier.enabled = true;
+        // Change to no screen aka the levelmanager takes over
+        TransitionToScreen(ScreenType.Level);
     }
 
     private void UnloadScreens()
@@ -104,7 +85,7 @@ public class ScreenManager : MonoBehaviour
 
         // Zoom out
         // If the screen is a menu screen, zoom out to the menu position, otherwise zoom out to the player position
-        if (currentScreen.isMenuScreen)
+        if (currentScreenObject.isMenuScreen)
             cameraController.ZoomOut(cameraController.menuPosition);
         else
             cameraController.ZoomOut(GameManager.Instance.Player.transform.position);
@@ -114,29 +95,35 @@ public class ScreenManager : MonoBehaviour
     {
         // Unsubscribe to EventBus Zoomed out event
         EventBus.Instance.OnCameraZoomOut -= OnZoomOutFinished;
-        menuScreenBarrier.UpdateEdgeCollider();
+        if (currentScreenObject.isMenuScreen)
+            menuScreenBarrier.gameObject.SetActive(true);
     }
 
     private void ChangeScreen()
     {
-        if (transitionScreen == null)
+        if (currentScreen == transitionScreen || transitionScreen == ScreenType.None)
         {
             return;
         }
 
-        // Deactivate the current screen
-        if (currentScreen != null)
+        if (currentScreen == ScreenType.None)
         {
-            currentScreen.gameObject.SetActive(false);
+            currentScreen = ScreenType.MainMenu;
+        }
+
+        // Deactivate the current screen
+        if (currentScreen != ScreenType.None)
+        {
+            currentScreenObject.gameObject.SetActive(false);
         }
 
         // Activate the new screen
-        transitionScreen.gameObject.SetActive(true);
+        transitionScreenObject.gameObject.SetActive(true);
 
         //Move the player to the new screen's player reference point if it exists
-        if (transitionScreen != null && transitionScreen.playerReferencePoint != null)
+        if (transitionScreenObject.playerReferencePoint != null)
         {
-            GameManager.Instance.Player.transform.position = transitionScreen
+            GameManager.Instance.Player.transform.position = transitionScreenObject
                 .playerReferencePoint
                 .position;
         }
@@ -145,21 +132,10 @@ public class ScreenManager : MonoBehaviour
         currentScreen = transitionScreen;
 
         // Set the transition screen to null
-        transitionScreen = null;
-
-        // If Screen is a menu screen, show the menu screen barrier
-        if (currentScreen.isMenuScreen)
-        {
-            menuScreenBarrier.gameObject.SetActive(true);
-            levelManager.enabled = false;
-        }
-        else
-        {
-            menuScreenBarrier.gameObject.SetActive(false);
-        }
+        transitionScreen = ScreenType.None;
     }
 
-    public void TransitionToScreen(Screen screen)
+    public void TransitionToScreen(ScreenType screen)
     {
         transitionScreen = screen;
         ZoomTransition(screen);
@@ -168,7 +144,9 @@ public class ScreenManager : MonoBehaviour
 
 public enum ScreenType
 {
+    None,
     MainMenu,
     Credits,
     Pause,
+    Level,
 }

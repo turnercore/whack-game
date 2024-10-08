@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         Player.GetComponent<PlayerController>().ResetPlayer();
 
         // Change to the menu screen
-        screenManager.LoadScreen(ButtonTypes.MainMenu);
+        screenManager.LoadScreen(ScreenType.MainMenu);
     }
 
     int CalculateScore()
@@ -205,16 +205,15 @@ public class GameManager : MonoBehaviour
                 QuitGame();
                 break;
             case ButtonTypes.MainMenu:
-                screenManager.LoadScreen(ButtonTypes.MainMenu);
+                screenManager.LoadScreen(ScreenType.MainMenu);
                 break;
             case ButtonTypes.Play:
-                screenManager.LoadScreen(ButtonTypes.Play);
+                screenManager.LoadScreen(ScreenType.Level);
                 break;
             case ButtonTypes.Options:
-                screenManager.LoadScreen(ButtonTypes.Options);
                 break;
             case ButtonTypes.Credits:
-                screenManager.LoadScreen(ButtonTypes.Credits);
+                screenManager.LoadScreen(ScreenType.Credits);
                 break;
         }
     }

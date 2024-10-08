@@ -5,8 +5,6 @@ public class MenuScreenBarrier : MonoBehaviour
 {
     private EdgeCollider2D edgeCollider;
 
-    private Vector2 lastScreenSize;
-
     private void Awake()
     {
         edgeCollider = GetComponent<EdgeCollider2D>();
@@ -18,7 +16,7 @@ public class MenuScreenBarrier : MonoBehaviour
         UpdateEdgeCollider();
     }
 
-    private void OnEnable()
+    private void Update()
     {
         UpdateEdgeCollider();
     }
