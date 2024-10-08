@@ -59,6 +59,12 @@ public class GameManager : MonoBehaviour
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
         EventBus.Instance.OnCoinCollected += OnCoinCollected;
         EventBus.Instance.OnPlayerDied += GameOver;
+
+        // Load the high score data
+        highScore.LoadData();
+
+        // Buttons event subscription
+        EventBus.Instance.OnButtonWacked += OnButtonWacked;
     }
 
     void InitializeGame()
@@ -159,5 +165,56 @@ public class GameManager : MonoBehaviour
     {
         highScore.PlayerInitials = name;
         highScore.SaveData();
+    }
+
+    private void OnButtonWacked(ButtonTypes buttonType)
+    {
+        switch (buttonType)
+        {
+            case ButtonTypes.Pause:
+                PauseGame();
+                break;
+            case ButtonTypes.Resume:
+                ResumeGame();
+                break;
+            case ButtonTypes.Restart:
+                RestartGame();
+                break;
+            case ButtonTypes.Quit:
+                QuitGame();
+                break;
+        }
+    }
+
+    public void PauseGame()
+    {
+        IsGamePaused = true;
+        EventBus.Instance.TriggerGamePaused();
+    }
+
+    public void ResumeGame()
+    {
+        IsGamePaused = false;
+        EventBus.Instance.TriggerGameResumed();
+    }
+
+    public void RestartGame()
+    {
+        IsGameOver = false;
+        IsGameWon = false;
+        InitializeGame();
+        EventBus.Instance.TriggerGameResumed();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void GameWon()
+    {
+        IsGameWon = true;
+        UpdateHighScore();
+        EventBus.Instance.TriggerGameWon();
     }
 }

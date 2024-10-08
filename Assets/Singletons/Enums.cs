@@ -19,4 +19,5 @@ public enum ButtonTypes
     MainMenu,
     Options,
     Credits,
+    Pause,
 }

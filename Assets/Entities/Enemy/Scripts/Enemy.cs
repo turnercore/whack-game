@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -59,7 +58,6 @@ public class Enemy : MonoBehaviour
         offScreenChecker.OnScreenStatusChanged += OnScreenStatusChanged;
         // Subscribe to health ondeath
         health.OnDeath += Die;
-
         // Set rb for rotation
         enemyRotation.Initialize(rb, this);
         // Disable rotation

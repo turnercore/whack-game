@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WackableButton : MonoBehaviour
@@ -10,6 +11,9 @@ public class WackableButton : MonoBehaviour
     private bool isInteractable = true;
     private bool isWackable = false;
     private bool isWacked = false;
+
+    [SerializeField]
+    private float wackedDelay = 0.5f;
 
     void Start()
     {
@@ -44,8 +48,15 @@ public class WackableButton : MonoBehaviour
             if (isWackable && collision.collider.CompareTag("Weapon") && !isWacked)
             {
                 isWacked = true;
-                EventBus.Instance.TriggerButtonWacked(buttonType);
+                //Trigger on delay to allow for animation
+                StartCoroutine(TriggerWackedEvent());
             }
         }
+    }
+
+    private IEnumerator TriggerWackedEvent()
+    {
+        yield return new WaitForSeconds(wackedDelay);
+        EventBus.Instance.TriggerButtonWacked(buttonType);
     }
 }
