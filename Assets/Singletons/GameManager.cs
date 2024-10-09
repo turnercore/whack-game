@@ -119,6 +119,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        // Update the game's Timers
+        Timercore.Update(isGamePaused);
+        
         if (!IsGamePaused && !IsGameOver && !IsGameWon)
         {
             timeElapsed += Time.deltaTime;
