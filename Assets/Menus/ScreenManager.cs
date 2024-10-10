@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
-    // List of all the screens
     [SerializeField]
     private List<Screen> screens = new();
 
@@ -22,13 +20,11 @@ public class ScreenManager : MonoBehaviour
     [SerializeField]
     private MenuScreenBarrier menuScreenBarrier;
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Loop through all the screens
+        // Deactivate all screens at the start
         foreach (Screen screen in screens)
         {
-            // Deactivate the screen
             screen.gameObject.SetActive(false);
         }
 
@@ -36,56 +32,83 @@ public class ScreenManager : MonoBehaviour
         GameManager.Instance.screenManager = this;
 
         // Activate the first screen
-        ZoomTransition(ScreenType.MainMenu);
+        TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
     }
 
-    public void ZoomTransition(ScreenType newScreen)
+    public void TransitionToScreen(
+        ScreenType newScreen,
+        ScreenTransitionType transitionType = ScreenTransitionType.ZoomInOut
+    )
     {
-        // Set the transition screen
-        menuScreenBarrier.gameObject.SetActive(false);
-        transitionScreen = newScreen;
-        cameraController.ZoomIn(GameManager.Instance.Player.transform.position);
-        EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
-    }
-
-    public void LoadScreen(ScreenType screenType)
-    {
-        // Set the transition screen
-        transitionScreen = screenType;
-        cameraController.ZoomIn(cameraController.menuPosition);
-        EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
-    }
-
-    private void StartGame()
-    {
-        // Change to no screen aka the levelmanager takes over
-        TransitionToScreen(ScreenType.Level);
-    }
-
-    private void UnloadScreens()
-    {
-        foreach (Screen screen in screens)
+        // If the new screen is the same as the current screen, do nothing
+        if (newScreen == currentScreen || newScreen == ScreenType.None)
         {
-            screen.gameObject.SetActive(false);
+            return;
         }
+
+        menuScreenBarrier.gameObject.SetActive(false);
+
+        // Set the transition screen
+        transitionScreen = newScreen;
+
+        // Transition based on the transition type
+        switch (transitionType)
+        {
+            case ScreenTransitionType.ZoomInOut:
+                ZoomInOutTransition(newScreen);
+                break;
+
+            case ScreenTransitionType.None:
+                InstantTransition(newScreen);
+                break;
+
+            default:
+                Debug.LogWarning($"Transition type {transitionType} is not implemented.");
+                break;
+        }
+    }
+
+    private void ZoomInOutTransition(ScreenType newScreen)
+    {
+        // Subscribe to ZoomIn event
+        EventBus.Instance.OnCameraZoomIn -= OnZoomInFinished;
+        EventBus.Instance.OnCameraZoomIn += OnZoomInFinished;
+
+        // Zoom in to initiate the transition
+        if (newScreen == ScreenType.Level)
+        {
+            // If transitioning to the game level, zoom in on the player's current position
+            cameraController.ZoomIn(GameManager.Instance.Player.transform.position);
+        }
+        else
+        {
+            // Otherwise, zoom in on the menu position
+            cameraController.ZoomIn(cameraController.menuPosition);
+        }
+    }
+
+    private void InstantTransition(ScreenType newScreen)
+    {
+        // Immediately change the screen without any transition
+        ChangeScreen();
     }
 
     private void OnZoomInFinished()
     {
-        // Change the screen
+        // Change the screen after zooming in
         ChangeScreen();
 
         // Snap the camera to the player
         cameraController.SnapToPlayer();
 
-        // Unsubscribe to EventBus Zoomed out event
+        // Unsubscribe from the ZoomIn event
         EventBus.Instance.OnCameraZoomIn -= OnZoomInFinished;
 
-        // Subscribe to EventBus Zoomed out event
+        // Subscribe to the ZoomOut event to handle the next part of the transition
+        EventBus.Instance.OnCameraZoomOut -= OnZoomOutFinished;
         EventBus.Instance.OnCameraZoomOut += OnZoomOutFinished;
 
         // Zoom out
-        // If the screen is a menu screen, zoom out to the menu position, otherwise zoom out to the player position
         if (currentScreenObject.isMenuScreen)
             cameraController.ZoomOut(cameraController.menuPosition);
         else
@@ -94,24 +117,16 @@ public class ScreenManager : MonoBehaviour
 
     private void OnZoomOutFinished()
     {
-        // Unsubscribe to EventBus Zoomed out event
+        // Unsubscribe from the ZoomOut event
         EventBus.Instance.OnCameraZoomOut -= OnZoomOutFinished;
+
+        // If the current screen is a menu, activate the menu screen barrier
         if (currentScreenObject.isMenuScreen)
             menuScreenBarrier.gameObject.SetActive(true);
     }
 
     private void ChangeScreen()
     {
-        if (currentScreen == transitionScreen || transitionScreen == ScreenType.None)
-        {
-            return;
-        }
-
-        if (currentScreen == ScreenType.None)
-        {
-            currentScreen = ScreenType.MainMenu;
-        }
-
         // Deactivate the current screen
         if (currentScreen != ScreenType.None)
         {
@@ -121,7 +136,7 @@ public class ScreenManager : MonoBehaviour
         // Activate the new screen
         transitionScreenObject.gameObject.SetActive(true);
 
-        //Move the player to the new screen's player reference point if it exists
+        // Move the player to the new screen's reference point if it exists
         if (transitionScreenObject.playerReferencePoint != null)
         {
             GameManager.Instance.Player.transform.position = transitionScreenObject
@@ -129,22 +144,17 @@ public class ScreenManager : MonoBehaviour
                 .position;
         }
 
-        // Set the new screen as the current screen
+        // Update the current screen
         currentScreen = transitionScreen;
 
-        // Set the transition screen to null
+        // Reset the transition screen
         transitionScreen = ScreenType.None;
 
+        // Hide the menu screen barrier if transitioning to a non-menu screen
         if (!currentScreenObject.isMenuScreen)
         {
             menuScreenBarrier.gameObject.SetActive(false);
         }
-    }
-
-    public void TransitionToScreen(ScreenType screen)
-    {
-        transitionScreen = screen;
-        ZoomTransition(screen);
     }
 }
 
@@ -155,4 +165,10 @@ public enum ScreenType
     Credits,
     Pause,
     Level,
+}
+
+public enum ScreenTransitionType
+{
+    None, // Instant screen transition
+    ZoomInOut, // Zoom in and zoom out transition
 }

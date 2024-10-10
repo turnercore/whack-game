@@ -82,6 +82,8 @@ public class GameManager : MonoBehaviour
         EventBus.Instance.OnButtonWacked += OnButtonWacked;
 
         InitializeGame();
+
+        //highScore.SaveData();
     }
 
     void InitializeGame()
@@ -100,7 +102,7 @@ public class GameManager : MonoBehaviour
         Player.GetComponent<PlayerController>().ResetPlayer();
 
         // Change to the menu screen
-        screenManager.LoadScreen(ScreenType.MainMenu);
+        screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
     }
 
     int CalculateScore()
@@ -120,8 +122,8 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         // Update the game's Timers
-        Timercore.Update(isGamePaused);
-        
+        // Timercore.Update(isGamePaused, Time.deltaTime);
+
         if (!IsGamePaused && !IsGameOver && !IsGameWon)
         {
             timeElapsed += Time.deltaTime;
@@ -208,15 +210,21 @@ public class GameManager : MonoBehaviour
                 QuitGame();
                 break;
             case ButtonTypes.MainMenu:
-                screenManager.LoadScreen(ScreenType.MainMenu);
+                screenManager.TransitionToScreen(
+                    ScreenType.MainMenu,
+                    ScreenTransitionType.ZoomInOut
+                );
                 break;
             case ButtonTypes.Play:
-                screenManager.LoadScreen(ScreenType.Level);
+                screenManager.TransitionToScreen(ScreenType.Level, ScreenTransitionType.ZoomInOut);
                 break;
             case ButtonTypes.Options:
                 break;
             case ButtonTypes.Credits:
-                screenManager.LoadScreen(ScreenType.Credits);
+                screenManager.TransitionToScreen(
+                    ScreenType.Credits,
+                    ScreenTransitionType.ZoomInOut
+                );
                 break;
         }
     }

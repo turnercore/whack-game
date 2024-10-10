@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 
@@ -10,6 +11,22 @@ public class HighScore : ScriptableObject
     // File path to save/load the high score data
     private string FilePath => Path.Combine(Application.dataPath, "Data", $"{name}_data.json");
 
+    public string PlayerInitials
+    {
+        get => _playerInitials;
+        set
+        {
+            if (value.Length > 3)
+            {
+                _playerInitials = value[..3].ToUpper();
+            }
+            else
+            {
+                _playerInitials = value.ToUpper();
+            }
+        }
+    }
+
     // Save data to the file
     public void SaveData()
     {
@@ -20,11 +37,7 @@ public class HighScore : ScriptableObject
             Directory.CreateDirectory(directory);
         }
 
-        HighScoreData data = new HighScoreData()
-        {
-            savedScore = score,
-            savedPlayerInitials = _playerInitials,
-        };
+        HighScoreData data = new HighScoreData() { score = this.score, name = _playerInitials };
 
         string jsonData = JsonUtility.ToJson(data);
         File.WriteAllText(FilePath, jsonData);
@@ -36,34 +49,25 @@ public class HighScore : ScriptableObject
         if (File.Exists(FilePath))
         {
             string jsonData = File.ReadAllText(FilePath);
-            HighScoreData data = JsonUtility.FromJson<HighScoreData>(jsonData);
+            HighScoreTable data = JsonUtility.FromJson<HighScoreTable>(jsonData);
 
-            score = data.savedScore;
-            PlayerInitials = data.savedPlayerInitials;
+            score = data.highScores[0].score;
+            PlayerInitials = data.highScores[0].name;
         }
     }
 
-    public string PlayerInitials
+    [System.Serializable]
+    private class HighScoreTable
     {
-        get => _playerInitials;
-        set
-        {
-            if (value.Length > 3)
-            {
-                _playerInitials = value.Substring(0, 3).ToUpper();
-            }
-            else
-            {
-                _playerInitials = value.ToUpper();
-            }
-        }
+        public HighScoreData[] highScores;
     }
 
     // Data class to serialize
     [System.Serializable]
     private class HighScoreData
     {
-        public int savedScore;
-        public string savedPlayerInitials;
+        public int score;
+        public string name;
+        public DateTime date;
     }
 }
