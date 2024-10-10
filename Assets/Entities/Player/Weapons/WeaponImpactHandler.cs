@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WeaponAttack : MonoBehaviour
+public class WeaponImpactHandler : MonoBehaviour
 {
     Rigidbody2D rb;
     private WeaponSlot weaponSlot;

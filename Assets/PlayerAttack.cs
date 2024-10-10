@@ -5,7 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     #region Variables
-    public float rotateSpeed = 20.0f;
+    public float maxSwingAngle = 90.0f; // Positive value for pullback angle
+    public float minSwingAngle = 45.0f; // Positive value for swing forward
+
+    public float swingTime = 0.1f; // Duration of the swing in seconds
+    public float reloadTime = 0.2f; // Duration of the reload in seconds
+
+    [SerializeField]
+    private float rotateSpeed = 10f;
 
     [SerializeField]
     private Transform weaponPivot;
@@ -14,14 +21,23 @@ public class PlayerAttack : MonoBehaviour
     private AttackType attackType;
 
     [SerializeField]
-    private Rigidbody2D weaponRigidBody;
+    private PlayerMovement playerMovement;
 
     [SerializeField]
     private Transform ghostWeaponPivot;
 
+    [SerializeField]
+    private Rigidbody2D weaponRb;
+
+    [SerializeField]
+    private Rigidbody2D ghostWeaponRb;
     private bool IsDead => GetComponent<PlayerController>().IsDead;
-    private Coroutine rotateCoroutine;
-    private bool isRotateRequested = false;
+    private Coroutine swingCoroutine;
+    private Coroutine ghostSwingCoroutine;
+    private bool isSwinging = false;
+
+    private PlayerInput playerInput; // Class-level variable for input
+    private float baseAngle = 0f; // Class-level variable for player's facing direction
     #endregion
 
     private enum AttackType
@@ -31,12 +47,24 @@ public class PlayerAttack : MonoBehaviour
         GhostPivot,
     }
 
-    private void Start()
+    private void Awake()
     {
-        // Subscribe to mouse click event using Unity's new Input System
-        var playerInput = new PlayerInput();
-        playerInput.Player.Attack.performed += ctx => OnAttack();
+        // Initialize PlayerInput in Awake to ensure it's ready before Start
+        playerInput = new PlayerInput();
+    }
+
+    private void OnEnable()
+    {
+        // Subscribe to input events
+        playerInput.Player.Attack.performed += OnAttack;
         playerInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe from input events
+        playerInput.Player.Attack.performed -= OnAttack;
+        playerInput.Disable();
     }
 
     private void FixedUpdate()
@@ -54,12 +82,15 @@ public class PlayerAttack : MonoBehaviour
             case AttackType.GhostPivot:
                 GhostPivotWeapon();
                 break;
+            case AttackType.Swing:
+                UpdateWeaponDirection();
+                break;
             default:
                 break;
         }
     }
 
-    public void PivotWeapon()
+    private void PivotWeapon()
     {
         // Get mouse position in world coordinates
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -69,64 +100,166 @@ public class PlayerAttack : MonoBehaviour
         // Calculate the angle between the player and the mouse position
         float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         // Smoothly rotate the weapon using Rigidbody2D
-        float currentAngle = weaponRigidBody.rotation;
+        float currentAngle = weaponRb.rotation;
         float newAngle = Mathf.LerpAngle(
             currentAngle,
             targetAngle,
             rotateSpeed * Time.fixedDeltaTime
         );
         // Apply the new rotation using Rigidbody2D.MoveRotation
-        weaponRigidBody.MoveRotation(newAngle);
+        weaponRb.MoveRotation(newAngle);
     }
 
-    public void GhostPivotWeapon()
+    private void GhostPivotWeapon()
     {
         // Get mouse position in world coordinates
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0; // Ensure we stay in 2D
         // Get direction from player to mouse
-        Vector2 direction = (mousePos - ghostWeaponPivot.position).normalized;
+        Vector2 direction = (mousePos - weaponPivot.position).normalized;
         // Calculate the angle between the player and the mouse position
         float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        // Rotate the ghost weapon to the target angle
-        ghostWeaponPivot.rotation = Quaternion.Euler(0, 0, targetAngle);
+        // Set the ghost weapon rotation
+        ghostWeaponRb.MoveRotation(targetAngle);
+    }
 
-        // Rotate the actual weapon towards the ghost weapon's angle if requested
-        if (isRotateRequested)
+    private void UpdateWeaponDirection()
+    {
+        Vector2 direction = playerMovement.Direction;
+
+        if (direction == Vector2.zero)
         {
-            if (rotateCoroutine != null)
-            {
-                StopCoroutine(rotateCoroutine);
-            }
-            rotateCoroutine = StartCoroutine(RotateWeaponToGhost(targetAngle));
-            isRotateRequested = false;
+            return;
+        }
+
+        // Update baseAngle continuously
+        baseAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        baseAngle = (baseAngle + 360) % 360;
+
+        if (!isSwinging)
+        {
+            // Only update weapon rotation when not swinging
+            float pullbackAngle = (baseAngle - maxSwingAngle + 360) % 360;
+            weaponRb.MoveRotation(pullbackAngle);
         }
     }
 
-    private void OnAttack()
+    private void OnAttack(InputAction.CallbackContext context)
     {
-        isRotateRequested = true;
+        Debug.Log("OnAttack called");
+        switch (attackType)
+        {
+            case AttackType.Pivot:
+                break;
+            case AttackType.GhostPivot:
+                // Rotate the weapon to where the ghost weapon is pointing
+                if (ghostSwingCoroutine != null) // Skip if it's already running
+                {
+                    StopCoroutine(ghostSwingCoroutine);
+                }
+                else
+                {
+                    ghostSwingCoroutine = StartCoroutine(
+                        RotateWeaponToGhost(ghostWeaponRb.rotation)
+                    );
+                }
+
+                break;
+            case AttackType.Swing:
+                if (swingCoroutine != null)
+                {
+                    StopCoroutine(swingCoroutine);
+                }
+                swingCoroutine = StartCoroutine(SwingWeapon());
+                break;
+            default:
+                break;
+        }
     }
 
     private IEnumerator RotateWeaponToGhost(float targetAngle)
     {
         while (true)
         {
-            float weaponCurrentAngle = weaponRigidBody.rotation;
+            float weaponCurrentAngle = weaponRb.rotation;
             float weaponNewAngle = Mathf.MoveTowardsAngle(
                 weaponCurrentAngle,
                 targetAngle,
                 rotateSpeed
             );
-            weaponRigidBody.MoveRotation(weaponNewAngle);
+            weaponRb.MoveRotation(weaponNewAngle);
 
             // Stop rotating once close enough to target angle
             if (Mathf.Abs(Mathf.DeltaAngle(weaponCurrentAngle, targetAngle)) < 1.0f)
             {
+                ghostSwingCoroutine = null;
                 yield break;
             }
 
             yield return null;
         }
+    }
+
+    private IEnumerator SwingWeapon()
+    {
+        if (playerMovement.Direction == Vector2.zero)
+        {
+            yield break;
+        }
+
+        playerMovement.BlockMovement();
+        isSwinging = true;
+
+        float startAngle = (baseAngle - maxSwingAngle + 360) % 360;
+        float targetAngle = (baseAngle - minSwingAngle + 360) % 360;
+
+        float elapsedTime = 0f;
+
+        // Swing weapon from startAngle to targetAngle over swingTime
+        while (elapsedTime < swingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / swingTime);
+            float currentAngle = Mathf.LerpAngle(startAngle, targetAngle, t);
+            weaponRb.MoveRotation(currentAngle);
+            yield return null;
+        }
+
+        // Ensure the weapon reaches the target angle
+        weaponRb.MoveRotation(targetAngle);
+
+        playerMovement.UnblockMovement();
+
+        // Reload weapon from targetAngle back to startAngle over reloadTime
+        elapsedTime = 0f;
+
+        // Check if another attack was initiated during reload
+        while (elapsedTime < reloadTime)
+        {
+            // If a new attack is initiated, break out to restart the swing
+            if (playerInput.Player.Attack.triggered)
+            {
+                break;
+            }
+
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / reloadTime);
+            float currentAngle = Mathf.LerpAngle(targetAngle, startAngle, t);
+            weaponPivot.localRotation = Quaternion.Euler(0, 0, currentAngle);
+            yield return null;
+        }
+
+        // If an attack was initiated during reload, restart the swing
+        if (playerInput.Player.Attack.triggered)
+        {
+            isSwinging = false;
+            swingCoroutine = StartCoroutine(SwingWeapon());
+            yield break;
+        }
+
+        // Ensure the weapon reaches the start angle
+        weaponRb.MoveRotation(startAngle);
+
+        isSwinging = false;
     }
 }
