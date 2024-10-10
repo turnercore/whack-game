@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     public int Score => CalculateScore();
 
     [SerializeField]
+    private bool IsTesting = false;
+
+    [SerializeField]
     private GameObject _player;
     public ScreenManager screenManager;
     private string _playerName;
@@ -82,13 +85,10 @@ public class GameManager : MonoBehaviour
         EventBus.Instance.OnButtonWacked += OnButtonWacked;
 
         InitializeGame();
-
-        //highScore.SaveData();
     }
 
     void InitializeGame()
     {
-        // Initialize the game state
         IsGamePaused = false;
         IsGameOver = false;
         IsGameWon = false;
@@ -102,18 +102,25 @@ public class GameManager : MonoBehaviour
         Player.GetComponent<PlayerController>().ResetPlayer();
 
         // Change to the menu screen
-        screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
+        if (!IsTesting)
+            screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
     }
 
     int CalculateScore()
     {
+        /*
+        * The score is calculated based on the following formula:
+        * Level * 1000
+        * Kills x 100
+        * Coins x 50
+        * Time Alive * 10
+        */
         return Kills * 100 + Coins * 50 + (int)timeElapsed * 10 + GetPlayerComponent().Level * 1000;
     }
 
     // Clean up
     private void OnDestroy()
     {
-        // Unsubscribe from the event
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         EventBus.Instance.OnCoinCollected -= OnCoinCollected;
         EventBus.Instance.OnPlayerDied -= GameOver;
@@ -121,9 +128,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // Update the game's Timers
-        // Timercore.Update(isGamePaused, Time.deltaTime);
-
         if (!IsGamePaused && !IsGameOver && !IsGameWon)
         {
             timeElapsed += Time.deltaTime;

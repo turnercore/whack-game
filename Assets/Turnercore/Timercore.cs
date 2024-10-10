@@ -1,206 +1,258 @@
-// using System;
-// using System.Collections.Generic;
-// using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// public static class Timercore {
-//     private class Timer {
-//         public float length;
-//         public float startTime;
-//         public float elapsedTime;
-//         public bool isRepeating;
-//         public bool isRunning;
-//         public bool isPaused;
-//         public bool runsOnGamePaused;
+public static class Timercore
+{
+    public class Timer
+    {
+        public float length;
+        public float elapsedTime;
+        public bool isRepeating;
+        public bool isRunning;
+        public bool isPaused;
+        public bool isReusable;
+        public bool runsOnGamePaused;
 
-//         public event Action onComplete;
-//         public event Action onStart;
-//         public event Action onPause;
-//         public event Action onUnpause;
-//         public event Action onStop;
-//         public event Action onReset;
-//         public event Action onUpdate;
+        public event Action OnComplete;
+        public event Action OnStart;
+        public event Action OnPause;
+        public event Action OnUnpause;
+        public event Action OnStop;
+        public event Action OnReset;
+        public event Action OnUpdate;
+        public event Action OnDestroy;
 
+        public Coroutine TimerCoroutine;
 
+        public void Start()
+        {
+            elapsedTime = 0;
+            isRunning = true;
+            InvokeOnStart();
 
-//         public void Start() {
-//             startTime = Time.time;
-//             isRunning = true;
-//             onStart?.Invoke();
-//         }
+            // Start the timer coroutine through TimerManager
+            TimerCoroutine = TimerManager.Instance.StartCoroutine(RunTimer());
+        }
 
-//         public void Stop() {
-//             isRunning = false;
-//             onStop?.Invoke();
-//         }
+        public void Stop()
+        {
+            if (TimerCoroutine != null)
+            {
+                TimerManager.Instance.StopCoroutine(TimerCoroutine);
+                TimerCoroutine = null;
+            }
+            isRunning = false;
+            InvokeOnStop();
+        }
 
-//         public void Reset() {
-//             startTime = 0;
-//             elapsedTime = 0;
-//             isRunning = false;
-//             onReset?.Invoke();
-//             UnsubscribeAll();
-//         }
+        public void Pause()
+        {
+            isPaused = true;
+            isRunning = false;
+            InvokeOnPause();
+        }
 
-//         public void Pause() {
-//             isPaused = true;
-//             isRunning = false;
-//             onPause?.Invoke();
-//         }
+        public void Unpause()
+        {
+            isPaused = false;
+            isRunning = true;
+            InvokeOnUnpause();
+        }
 
-//         public void Unpause() {
-//             isPaused = false;
-//             isRunning = true;
-//             onUnpause?.Invoke();
-//         }
+        public void Reset()
+        {
+            elapsedTime = 0;
+            isRunning = false;
+            InvokeOnReset();
+            UnsubscribeAll();
+        }
 
-//         public void UnsubscribeAll() {
-//             onComplete = null;
-//             onStart = null;
-//             onPause = null;
-//             onUnpause = null;
-//             onStop = null;
-//             onReset = null;
-//             onUpdate = null;
-//         }
-//     }
+        public void UnsubscribeAll()
+        {
+            OnComplete = null;
+            OnStart = null;
+            OnPause = null;
+            OnUnpause = null;
+            OnStop = null;
+            OnReset = null;
+            OnUpdate = null;
+            OnDestroy = null;
+        }
 
-//     private static Dictionary<string, Timer> timers = new();
+        private IEnumerator RunTimer()
+        {
+            while (isRunning)
+            {
+                if (!isPaused)
+                {
+                    elapsedTime += Time.deltaTime;
+                    InvokeOnUpdate();
 
-//     public static TimerBuilder CreateTimer(string timerName = "") {
-//         return new TimerBuilder(timerName);
-//     }
+                    if (elapsedTime >= length)
+                    {
+                        InvokeOnComplete();
 
-//     public class TimerBuilder {
-//         private Timer timer;
-//         private string timerName;
+                        if (isRepeating)
+                        {
+                            elapsedTime = 0;
+                        }
+                        else
+                        {
+                            Stop();
+                            if (!isReusable)
+                            {
+                                InvokeOnDestroy();
+                                TimerManager.Instance.RemoveTimer(this);
+                            }
+                        }
+                    }
+                }
 
-//         public TimerBuilder(string name) {
-//             timerName = string.IsNullOrEmpty(name) ? Guid.NewGuid().ToString() : name;
-//             timer = new Timer();
-//         }
+                yield return null;
+            }
+        }
 
-//         public TimerBuilder SetLength(float length) {
-//             timer.length = length;
-//             return this;
-//         }
+        #region Invoke events
 
-//         public TimerBuilder SetRepeating(bool repeat) {
-//             timer.isRepeating = repeat;
-//             return this;
-//         }
+        public void InvokeOnComplete() => OnComplete?.Invoke();
 
-//         public TimerBuilder OnComplete(Action callback) {
-//             timer.onComplete += callback;
-//             return this;
-//         }
+        public void InvokeOnStart() => OnStart?.Invoke();
 
-//         public TimerBuilder OnStart(Action callback) {
-//             timer.onStart += callback;
-//             return this;
-//         }
+        public void InvokeOnPause() => OnPause?.Invoke();
 
-//         public TimerBuilder OnPause(Action callback) {
-//             timer.onPause += callback;
-//             return this;
-//         }
+        public void InvokeOnUnpause() => OnUnpause?.Invoke();
 
-//         public TimerBuilder OnUnpause(Action callback) {
-//             timer.onUnpause += callback;
-//             return this;
-//         }
+        public void InvokeOnStop() => OnStop?.Invoke();
 
-//         public TimerBuilder OnStop(Action callback) {
-//             timer.onStop += callback;
-//             return this;
-//         }
+        public void InvokeOnReset() => OnReset?.Invoke();
 
-//         public TimerBuilder OnReset(Action callback) {
-//             timer.onReset += callback;
-//             return this;
-//         }
+        public void InvokeOnUpdate() => OnUpdate?.Invoke();
 
-//         public TimerBuilder OnUpdate(Action callback) {
-//             timer.onUpdate += callback;
-//             return this;
-//         }
+        public void InvokeOnDestroy() => OnDestroy?.Invoke();
 
-//         public TimerBuilder Reset() {
-//             timer.Reset();
-//             return this;
-//         }
+        #endregion
+    }
 
-//         public TimerBuilder Pause() {
-//             timer.Pause();
-//             return this;
-//         }
+    private static Dictionary<string, Timer> timers = new();
 
-//         public TimerBuilder Unpause() {
-//             timer.Unpause();
-//             return this;
-//         }
+    public static TimerBuilder CreateTimer(string timerName = "")
+    {
+        return new TimerBuilder(timerName);
+    }
 
-//         public TimerBuilder Stop() {
-//             timer.Stop();
-//             return this;
-//         }
+    public class TimerBuilder
+    {
+        private Timer timer;
+        private string timerName;
 
-//         public TimerBuilder UnsubscribeAll() {
-//             timer.UnsubscribeAll();
-//             return this;
-//         }
+        public TimerBuilder(string name)
+        {
+            timerName = string.IsNullOrEmpty(name) ? Guid.NewGuid().ToString() : name;
+            timer = new Timer();
+        }
 
-//         public TimerBuilder RunOnGamePaused(bool runOnGamePaused) {
-//             timer.runsOnGamePaused = runOnGamePaused;
-//             return this;
-//         }
+        public TimerBuilder SetLength(float length)
+        {
+            timer.length = length;
+            return this;
+        }
 
-//         public string Start() {
-//             if (!timers.ContainsKey(timerName)) {
-//                 timer.Start();
-//                 timers.Add(timerName, timer);
-//             }
-//             return timerName;
-//         }
-//     }
+        public TimerBuilder SetRepeating(bool repeat)
+        {
+            timer.isRepeating = repeat;
+            return this;
+        }
 
-//     public static void UnsubscribeCallback(string timerName, Action callback) {
-//         if (timers.ContainsKey(timerName)) {
-//             Timer timer = timers[timerName];
-//             // Manually remove the specific callback from the appropriate event
-//             timer.onComplete -= callback;
-//             timer.onStart -= callback;
-//             timer.onPause -= callback;
-//             timer.onUnpause -= callback;
-//             timer.onStop -= callback;
-//             timer.onReset -= callback;
-//             timer.onUpdate -= callback;
-//         }
-//     }
+        public TimerBuilder OnComplete(Action callback)
+        {
+            timer.OnComplete += callback;
+            return this;
+        }
 
-//   public static void Update(bool isGamePaused = false) {
-//       foreach (KeyValuePair<string, Timer> timer in timers) {
-//           // Check if the timer is running
-//           if (timer.Value.isRunning) {
-//               // If the game is paused, only update timers that should run when paused
-//               if (isGamePaused && !timer.Value.runsOnGamePaused) {
-//                   continue;
-//               }
+        public TimerBuilder OnStart(Action callback)
+        {
+            timer.OnStart += callback;
+            return this;
+        }
 
-//               // Update the elapsed time
-//               timer.Value.elapsedTime = Time.time - timer.Value.startTime;
-//               timer.Value.onUpdate?.Invoke();
+        public TimerBuilder OnPause(Action callback)
+        {
+            timer.OnPause += callback;
+            return this;
+        }
 
-//               // Check if the timer has reached its length
-//               if (timer.Value.elapsedTime >= timer.Value.length) {
-//                   timer.Value.onComplete?.Invoke();
+        public TimerBuilder OnUnpause(Action callback)
+        {
+            timer.OnUnpause += callback;
+            return this;
+        }
 
-//                   if (timer.Value.isRepeating) {
-//                       timer.Value.Start();
-//                   } else {
-//                       timer.Value.Stop();
-//                   }
-//               }
-//           }
-//       }
-//   }
-// }
+        public TimerBuilder OnStop(Action callback)
+        {
+            timer.OnStop += callback;
+            return this;
+        }
+
+        public TimerBuilder OnReset(Action callback)
+        {
+            timer.OnReset += callback;
+            return this;
+        }
+
+        public TimerBuilder OnUpdate(Action callback)
+        {
+            timer.OnUpdate += callback;
+            return this;
+        }
+
+        public TimerBuilder RunOnGamePaused(bool runOnGamePaused)
+        {
+            timer.runsOnGamePaused = runOnGamePaused;
+            return this;
+        }
+
+        public string Start()
+        {
+            if (!timers.ContainsKey(timerName))
+            {
+                timers.Add(timerName, timer);
+                timer.Start();
+            }
+            return timerName;
+        }
+    }
+
+    public static void UnsubscribeCallback(string timerName, Action callback)
+    {
+        if (timers.ContainsKey(timerName))
+        {
+            Timer timer = timers[timerName];
+            timer.OnComplete -= callback;
+            timer.OnStart -= callback;
+            timer.OnPause -= callback;
+            timer.OnUnpause -= callback;
+            timer.OnStop -= callback;
+            timer.OnReset -= callback;
+            timer.OnUpdate -= callback;
+        }
+    }
+
+    public static void RemoveTimer(Timer timer)
+    {
+        string key = null;
+        foreach (var kvp in timers)
+        {
+            if (kvp.Value == timer)
+            {
+                key = kvp.Key;
+                break;
+            }
+        }
+        if (key != null)
+        {
+            timers.Remove(key);
+        }
+    }
+}

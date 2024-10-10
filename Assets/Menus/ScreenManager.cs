@@ -13,9 +13,9 @@ public class ScreenManager : MonoBehaviour
     private LevelManager levelManager;
 
     private ScreenType currentScreen = ScreenType.None;
-    private Screen currentScreenObject => screens[(int)currentScreen - 1];
+    private Screen CurrentScreenObject => screens[(int)currentScreen - 1];
     private ScreenType transitionScreen = ScreenType.None;
-    private Screen transitionScreenObject => screens[(int)transitionScreen - 1];
+    private Screen TransitionScreenObject => screens[(int)transitionScreen - 1];
 
     [SerializeField]
     private MenuScreenBarrier menuScreenBarrier;
@@ -109,7 +109,7 @@ public class ScreenManager : MonoBehaviour
         EventBus.Instance.OnCameraZoomOut += OnZoomOutFinished;
 
         // Zoom out
-        if (currentScreenObject.isMenuScreen)
+        if (CurrentScreenObject.isMenuScreen)
             cameraController.ZoomOut(cameraController.menuPosition);
         else
             cameraController.ZoomOut(GameManager.Instance.Player.transform.position);
@@ -121,7 +121,7 @@ public class ScreenManager : MonoBehaviour
         EventBus.Instance.OnCameraZoomOut -= OnZoomOutFinished;
 
         // If the current screen is a menu, activate the menu screen barrier
-        if (currentScreenObject.isMenuScreen)
+        if (CurrentScreenObject.isMenuScreen)
             menuScreenBarrier.gameObject.SetActive(true);
     }
 
@@ -130,16 +130,16 @@ public class ScreenManager : MonoBehaviour
         // Deactivate the current screen
         if (currentScreen != ScreenType.None)
         {
-            currentScreenObject.gameObject.SetActive(false);
+            CurrentScreenObject.gameObject.SetActive(false);
         }
 
         // Activate the new screen
-        transitionScreenObject.gameObject.SetActive(true);
+        TransitionScreenObject.gameObject.SetActive(true);
 
         // Move the player to the new screen's reference point if it exists
-        if (transitionScreenObject.playerReferencePoint != null)
+        if (TransitionScreenObject.playerReferencePoint != null)
         {
-            GameManager.Instance.Player.transform.position = transitionScreenObject
+            GameManager.Instance.Player.transform.position = TransitionScreenObject
                 .playerReferencePoint
                 .position;
         }
@@ -151,7 +151,7 @@ public class ScreenManager : MonoBehaviour
         transitionScreen = ScreenType.None;
 
         // Hide the menu screen barrier if transitioning to a non-menu screen
-        if (!currentScreenObject.isMenuScreen)
+        if (!CurrentScreenObject.isMenuScreen)
         {
             menuScreenBarrier.gameObject.SetActive(false);
         }
