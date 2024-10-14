@@ -179,7 +179,7 @@ MonoBehaviour:
   brain: {fileID: 654577723970651042}
   enemyRotation: {fileID: 3803986324091165019}
   enemyDrops: {fileID: 1831679204433729512}
-  enemyCollider: {fileID: 7959134939362593199}
+  enemyComboDetector: {fileID: 5619086056416978837}
   offScreenChecker: {fileID: 7966302044895671875}
   hitParticles: {fileID: 337272757488714541}
   emoteAnimator: {fileID: 5460780904319477933}
@@ -5541,6 +5541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comboMultiplier: 1
   multiplierIncrease: 1.2
+  multiplierMode: 0
   polygonCollider: {fileID: 5134545279541496679}
   comboIndicator: {fileID: 4622417029393167043}
 --- !u!1001 &728684893703363101

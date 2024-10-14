@@ -10,7 +10,7 @@ public class WeaponImpactHandler : MonoBehaviour
     private float MIN_FORCE_OF_IMPACT = 5.0f;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // Get the bat's Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
@@ -28,18 +28,25 @@ public class WeaponImpactHandler : MonoBehaviour
 
     void HitEnemy(Collision2D enemy)
     {
-        // Play the hit sound
         Weapon.PlayHitEffects();
-        // See if the collision as t a minimum force
+        // Check if the enemy's relative velocity is less than the minimum force of impact, if so, return
         if (enemy.relativeVelocity.magnitude < MIN_FORCE_OF_IMPACT)
         {
-            // Debug.Log("Not enough force to hit the enemy");
             return;
         }
-        // Get the normal
+        // Get the normal of the collision to determine the direction of the hit
         Vector2 direction = enemy.contacts[0].normal;
-        // Get the enemy's Rigidbody2D and enemy weight from its script
-        Rigidbody2D enemyRb = enemy.collider.GetComponent<Rigidbody2D>();
-        enemy.collider.GetComponent<Enemy>().Hit(direction, Weapon.damage, Weapon.addedForce);
+        // Hit the enemy
+        enemy
+            .collider.GetComponent<Enemy>()
+            .Hit(
+                direction,
+                Weapon.damage,
+                Weapon.multiplierMode,
+                Weapon.multiplierIncrease,
+                Weapon.startComboMultiplier,
+                Weapon.addedForce,
+                Weapon.addedWackedTime
+            );
     }
 }

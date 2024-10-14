@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
     private EnemyDrops enemyDrops;
 
     [SerializeField]
-    private EnemyDetector enemyCollider;
+    private EnemyDetector enemyComboDetector;
 
     [SerializeField]
     private OffScreenChecker offScreenChecker;
@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour
 
     #endregion
 
-    void Start()
+    private void Awake()
     {
         // Subscribe to off-screen status changes
         offScreenChecker.OnScreenStatusChanged += OnScreenStatusChanged;
@@ -62,7 +62,10 @@ public class Enemy : MonoBehaviour
         enemyRotation.Initialize(rb, this);
         // Disable rotation
         enemyRotation.Disable();
+        enemyComboDetector.enabled = false;
     }
+
+    void Start() { }
 
     private void OnDestroy()
     {
@@ -101,6 +104,9 @@ public class Enemy : MonoBehaviour
     public void Hit(
         Vector2 direction,
         float damage,
+        ComboMultiplierMode multiplierMode,
+        float multiplierIncrease,
+        float comboMultiplier,
         float addedForce = 1.0f,
         float addedWackedTime = 0.0f
     )
@@ -118,35 +124,39 @@ public class Enemy : MonoBehaviour
         DamageHit = damage;
         DirectionHit = direction;
         AddedForceHit = addedForce;
-        HandleHit(direction, damage, addedForce);
-    }
 
-    private void HandleHit(Vector2 direction, float damage, float force = 1.0f)
-    {
-        // Take damage
+        // Handle the hit by doing the folkowing:
+        // 1. Take damage
         health.TakeDamage(damage);
-        // Add force to the enemy in the direction of the hit
-        rb.AddForce(force * direction, ForceMode2D.Impulse);
-        // Play hit particles if they exist
+        // 2. Add force to self in the direction of the hit
+        rb.AddForce(addedForce * direction, ForceMode2D.Impulse);
+        // 3. Play hit particles if they exist
         if (hitParticles != null && !IsDead)
         {
             hitParticles.Play();
         }
+
+        // Update the enemyComboDetector with the combo values
+        enemyComboDetector.comboMultiplier = comboMultiplier;
+        enemyComboDetector.multiplierMode = multiplierMode;
+        enemyComboDetector.multiplierIncrease = multiplierIncrease;
+        enemyComboDetector.damage = damage;
+        enemyComboDetector.force = addedForce;
+        enemyComboDetector.addedWackedTime = addedWackedTime;
     }
 
     private void Wacked(float addedWackedTime = 0.0f)
     {
         IsWacked = true;
-        // Change emote once stationary to D
         // Turn off brain when wacked until either off-screen or a short time has passed, unless dead then it will remain disabled
         if (brain != null && brain.enabled && !IsDead)
         {
             StartCoroutine(DisableBrainTemporarily());
         }
-        // Unfreeze enemy rotation
+        // Unfreeze enemy rotation to give it a ragdoll effect
         enemyRotation.Enable();
-        // Enable other enemy detection
-        enemyCollider.enabled = true;
+        // Enable other enemy detection for combo hits
+        enemyComboDetector.enabled = true;
         StartCoroutine(ResetIsWacked(wackedTime + addedWackedTime));
     }
 
@@ -157,7 +167,7 @@ public class Enemy : MonoBehaviour
         // Freeze enemy rotation
         enemyRotation.Disable();
         // Disable other enemy detection
-        enemyCollider.enabled = false;
+        enemyComboDetector.enabled = false;
         // If the enemy is dead, slowly lower the velocity to 0
         if (IsDead && !hasFirstDeathStop)
         {

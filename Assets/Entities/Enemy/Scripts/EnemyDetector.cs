@@ -5,6 +5,9 @@ public class EnemyDetector : MonoBehaviour
 {
     public float comboMultiplier = 1.0f; // Combo multiplier starts at 1
     public float multiplierIncrease = 1.2f; // How much the multiplier increases on each hit
+    public float damage = 0.0f;
+    public float force = 0.0f;
+    public float addedWackedTime = 0.0f;
     public ComboMultiplierMode multiplierMode = ComboMultiplierMode.Additive; // How the multiplier is calculated
 
     private Enemy parentEnemy;
@@ -48,19 +51,13 @@ public class EnemyDetector : MonoBehaviour
             // Check if the other enemy is not already wacked
             if (otherEnemy != null && !otherEnemy.IsWacked)
             {
-                // Use the position difference to calculate a hit direction
-                Vector2 contactNormal = (other.transform.position - transform.position).normalized;
+                // Multiply the damage by the combo mulitplier for the new damage
+                damage = parentEnemy.DamageHit * comboMultiplier;
 
-                // Calculate the force of the hit using the combo multiplier
-                float forceDamage = parentEnemy.DamageHit * comboMultiplier;
-                float addedForce = parentEnemy.AddedForceHit * comboMultiplier;
+                // Multiply the force by the combo mulitplier for the new force
+                force = parentEnemy.AddedForceHit * comboMultiplier;
 
-                // Hit the other enemy
-                otherEnemy.Hit(contactNormal, forceDamage);
-                otherEnemy.rb.AddForce(contactNormal * addedForce, ForceMode2D.Impulse);
-                otherEnemy.rb.AddTorque(0.1f, ForceMode2D.Impulse);
-
-                // Increase the combo multiplier for the next hit
+                // Increase the multiplier
                 switch (multiplierMode)
                 {
                     case ComboMultiplierMode.Additive:
@@ -74,7 +71,19 @@ public class EnemyDetector : MonoBehaviour
                         break;
                 }
 
-                comboMultiplier += multiplierIncrease; // Additive mode
+                // Hit the other enemy
+                Vector2 contactNormal = (other.transform.position - transform.position).normalized;
+                otherEnemy.Hit(
+                    contactNormal,
+                    damage,
+                    multiplierMode,
+                    multiplierIncrease,
+                    comboMultiplier,
+                    force,
+                    addedWackedTime
+                );
+                otherEnemy.rb.AddForce(contactNormal * force, ForceMode2D.Impulse);
+                otherEnemy.rb.AddTorque(0.1f, ForceMode2D.Impulse);
             }
         }
     }
@@ -84,4 +93,5 @@ public enum ComboMultiplierMode
 {
     Additive,
     Multiplicative,
+    None,
 }

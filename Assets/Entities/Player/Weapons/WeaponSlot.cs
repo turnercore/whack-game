@@ -16,7 +16,7 @@ public class WeaponSlot : MonoBehaviour
     // Weapon script
     public Weapon weapon;
 
-    public void SetWeapon(GameObject weaponPrefab)
+    public Weapon SetWeapon(GameObject weaponPrefab)
     {
         // Delete the current child weapon object
         foreach (Transform child in transform)
@@ -27,7 +27,7 @@ public class WeaponSlot : MonoBehaviour
         // Check if null
         if (weaponPrefab == null)
         {
-            return;
+            return null;
         }
 
         // Instantiate the weapon prefab
@@ -41,6 +41,9 @@ public class WeaponSlot : MonoBehaviour
 
         // Set the weapon's location to the offset
         weaponObject.transform.localPosition = weapon.offset;
+
+        // Return the weapon
+        return weapon;
     }
 
     Weapon GetWeapon()

@@ -25,14 +25,20 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private WeaponSlot weaponSlot;
+
+    private Weapon currentWeapon;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         XP = 0;
         Level = 1;
-        GameManager.Instance.RegisterPlayer(gameObject);
         health.OnDeath += OnDeath;
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.RegisterPlayer(gameObject);
     }
 
     // Cleanup
@@ -108,7 +114,15 @@ public class PlayerController : MonoBehaviour
 
     public void AddWeapon(GameObject weapon)
     {
-        weaponSlot.SetWeapon(weapon);
+        currentWeapon = weaponSlot.SetWeapon(weapon);
+        currentWeapon.Initialize(
+            playerAttack.damage,
+            playerAttack.force,
+            playerAttack.startComboMultiplier,
+            playerAttack.comboIncrease,
+            playerAttack.comboMultiplierMode,
+            playerAttack.addedWackedTime
+        );
     }
 
     public void ResetPlayer()

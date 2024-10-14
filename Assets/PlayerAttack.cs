@@ -38,6 +38,14 @@ public class PlayerAttack : MonoBehaviour
 
     private PlayerInput playerInput; // Class-level variable for input
     private float baseAngle = 0f; // Class-level variable for player's facing direction
+
+    // Combo variables
+    public float startComboMultiplier = 1.0f;
+    public ComboMultiplierMode comboMultiplierMode = ComboMultiplierMode.Additive;
+    public float comboIncrease = 1.0f;
+    public float damage = 0.0f;
+    public float force = 0.0f;
+    public float addedWackedTime = 0.0f;
     #endregion
 
     private enum AttackType
