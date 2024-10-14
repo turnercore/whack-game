@@ -39,7 +39,7 @@ public class Enemy : MonoBehaviour
     private EnemyDrops enemyDrops;
 
     [SerializeField]
-    private GameObject triggerCollider;
+    private EnemyDetector enemyCollider;
 
     [SerializeField]
     private OffScreenChecker offScreenChecker;
@@ -146,7 +146,7 @@ public class Enemy : MonoBehaviour
         // Unfreeze enemy rotation
         enemyRotation.Enable();
         // Enable other enemy detection
-        triggerCollider.SetActive(true);
+        enemyCollider.enabled = true;
         StartCoroutine(ResetIsWacked(wackedTime + addedWackedTime));
     }
 
@@ -157,7 +157,7 @@ public class Enemy : MonoBehaviour
         // Freeze enemy rotation
         enemyRotation.Disable();
         // Disable other enemy detection
-        triggerCollider.SetActive(false);
+        enemyCollider.enabled = false;
         // If the enemy is dead, slowly lower the velocity to 0
         if (IsDead && !hasFirstDeathStop)
         {

@@ -1,10 +1,32 @@
 using UnityEngine;
 
+[RequireComponent(typeof(PolygonCollider2D))]
 public class EnemyDetector : MonoBehaviour
 {
-    private const float FORCE_HIT_REDUCTION = 0.5f;
-    private const float DAMAGE_HIT_REDUCTION = 0.5f;
+    public float comboMultiplier = 1.0f; // Combo multiplier starts at 1
+    public float multiplierIncrease = 1.2f; // How much the multiplier increases on each hit
+    public ComboMultiplierMode multiplierMode = ComboMultiplierMode.Additive; // How the multiplier is calculated
+
     private Enemy parentEnemy;
+
+    [SerializeField]
+    private PolygonCollider2D polygonCollider;
+
+    [SerializeField]
+    private ComboIndicator comboIndicator;
+
+    private void OnEnable()
+    {
+        // Ensure the polygon collider is enabled
+        polygonCollider.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        // Ensure the polygon collider is disabled
+        polygonCollider.enabled = false;
+        comboMultiplier = 1.0f; // Reset combo multiplier when disabled
+    }
 
     private void Awake()
     {
@@ -12,12 +34,12 @@ public class EnemyDetector : MonoBehaviour
         parentEnemy = GetComponentInParent<Enemy>();
     }
 
+    // New combo system. When the enemy hits another enemy, we'll increase the combo multiplier and apply increased damage and force to the next enemy.
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Ensure the parent enemy is "wacked" and ready to trigger
         if (!parentEnemy.IsWacked || !other.CompareTag("Enemy"))
             return;
-        // Log the collision
 
         // Check if the collider is an enemy and not the parent
         if (other.gameObject != parentEnemy.gameObject)
@@ -28,20 +50,41 @@ public class EnemyDetector : MonoBehaviour
             {
                 // Use the position difference to calculate a hit direction
                 Vector2 contactNormal = (other.transform.position - transform.position).normalized;
-                // Calculate the force of the hit, should be half of the parent's force hit
-                //float forceHit = parentEnemy.ForceHit * FORCE_HIT_REDUCTION;
-                // Calculate the damage of the hit, should be half of the parent's force damage
-                float forceDamage = parentEnemy.DamageHit * DAMAGE_HIT_REDUCTION;
-                //If damage is less than 0.5, ignore the hit
-                if (forceDamage < 0.5f)
-                    return;
-                // Calculate added force of the hit, should be half of the parent's added force
-                float addedForce = parentEnemy.AddedForceHit * FORCE_HIT_REDUCTION;
+
+                // Calculate the force of the hit using the combo multiplier
+                float forceDamage = parentEnemy.DamageHit * comboMultiplier;
+                float addedForce = parentEnemy.AddedForceHit * comboMultiplier;
+
                 // Hit the other enemy
                 otherEnemy.Hit(contactNormal, forceDamage);
-                //Give it a tiny bit of angular pulse
+                otherEnemy.rb.AddForce(contactNormal * addedForce, ForceMode2D.Impulse);
                 otherEnemy.rb.AddTorque(0.1f, ForceMode2D.Impulse);
+
+                // Increase the combo multiplier for the next hit
+                switch (multiplierMode) {
+                    case MultiplierMode.Additive:
+                        comboMultiplier += multiplierIncrease;  // Additive mode
+                        break;  
+                        case MultiplierMode.Multiplicative:
+                        comboMultiplier *= multiplierIncrease;  // Multiplicative mode
+                        break;
+                        default:
+                        comboMultiplier += multiplierIncrease;  // Additive mode
+                        break;
+
+                    }
+                
+                
+                                comboMultiplier += multiplierIncrease;  // Additive mode
+                else
+
             }
         }
     }
+}
+
+public enum ComboMultiplierMode
+{
+    Additive,
+    Multiplicative,
 }
