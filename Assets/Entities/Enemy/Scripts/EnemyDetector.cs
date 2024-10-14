@@ -61,23 +61,20 @@ public class EnemyDetector : MonoBehaviour
                 otherEnemy.rb.AddTorque(0.1f, ForceMode2D.Impulse);
 
                 // Increase the combo multiplier for the next hit
-                switch (multiplierMode) {
-                    case MultiplierMode.Additive:
-                        comboMultiplier += multiplierIncrease;  // Additive mode
-                        break;  
-                        case MultiplierMode.Multiplicative:
-                        comboMultiplier *= multiplierIncrease;  // Multiplicative mode
+                switch (multiplierMode)
+                {
+                    case ComboMultiplierMode.Additive:
+                        comboMultiplier += multiplierIncrease; // Additive mode
                         break;
-                        default:
-                        comboMultiplier += multiplierIncrease;  // Additive mode
+                    case ComboMultiplierMode.Multiplicative:
+                        comboMultiplier *= multiplierIncrease; // Multiplicative mode
                         break;
+                    default:
+                        comboMultiplier += multiplierIncrease; // Additive mode
+                        break;
+                }
 
-                    }
-                
-                
-                                comboMultiplier += multiplierIncrease;  // Additive mode
-                else
-
+                comboMultiplier += multiplierIncrease; // Additive mode
             }
         }
     }
