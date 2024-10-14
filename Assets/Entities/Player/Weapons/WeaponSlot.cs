@@ -36,12 +36,6 @@ public class WeaponSlot : MonoBehaviour
         // Set weapon to the Weapon component
         weapon = weaponObject.GetComponent<Weapon>();
 
-        // Set the weapon as child
-        weaponObject.transform.parent = transform;
-
-        // Set the weapon's location to the offset
-        weaponObject.transform.localPosition = weapon.offset;
-
         // Return the weapon
         return weapon;
     }

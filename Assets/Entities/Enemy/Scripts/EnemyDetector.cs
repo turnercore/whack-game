@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(PolygonCollider2D))]
@@ -8,7 +9,7 @@ public class EnemyDetector : MonoBehaviour
     public float damage = 0.0f;
     public float force = 0.0f;
     public float addedWackedTime = 0.0f;
-    public ComboMultiplierMode multiplierMode = ComboMultiplierMode.Additive; // How the multiplier is calculated
+    public ComboMultiplierMode multiplierMode = ComboMultiplierMode.None; // How the multiplier is calculated
 
     private Enemy parentEnemy;
 
@@ -55,7 +56,7 @@ public class EnemyDetector : MonoBehaviour
                 damage = parentEnemy.DamageHit * comboMultiplier;
 
                 // Multiply the force by the combo mulitplier for the new force
-                force = parentEnemy.AddedForceHit * comboMultiplier;
+                force = parentEnemy.AddedForceHit;
 
                 // Increase the multiplier
                 switch (multiplierMode)
@@ -71,7 +72,7 @@ public class EnemyDetector : MonoBehaviour
                         break;
                 }
 
-                // Hit the other enemy
+                // Hit the other enemy, passing on the combo values
                 Vector2 contactNormal = (other.transform.position - transform.position).normalized;
                 otherEnemy.Hit(
                     contactNormal,
@@ -82,8 +83,13 @@ public class EnemyDetector : MonoBehaviour
                     force,
                     addedWackedTime
                 );
-                otherEnemy.rb.AddForce(contactNormal * force, ForceMode2D.Impulse);
-                otherEnemy.rb.AddTorque(0.1f, ForceMode2D.Impulse);
+
+                // Reset my own combo multiplier values
+                comboMultiplier = 1.0f;
+                damage = 0.0f;
+                force = 0.0f;
+                addedWackedTime = 0.0f;
+                multiplierMode = ComboMultiplierMode.None;
             }
         }
     }

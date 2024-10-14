@@ -26,7 +26,6 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField]
     private Transform ghostWeaponPivot;
 
-    [SerializeField]
     private Rigidbody2D weaponRb;
 
     [SerializeField]
@@ -82,20 +81,21 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
-        switch (attackType)
-        {
-            case AttackType.Pivot:
-                PivotWeapon();
-                break;
-            case AttackType.GhostPivot:
-                GhostPivotWeapon();
-                break;
-            case AttackType.Swing:
-                UpdateWeaponDirection();
-                break;
-            default:
-                break;
-        }
+        if (weaponRb != null)
+            switch (attackType)
+            {
+                case AttackType.Pivot:
+                    PivotWeapon();
+                    break;
+                case AttackType.GhostPivot:
+                    GhostPivotWeapon();
+                    break;
+                case AttackType.Swing:
+                    UpdateWeaponDirection();
+                    break;
+                default:
+                    break;
+            }
     }
 
     private void PivotWeapon()
@@ -114,7 +114,11 @@ public class PlayerAttack : MonoBehaviour
             targetAngle,
             rotateSpeed * Time.fixedDeltaTime
         );
+
         // Apply the new rotation using Rigidbody2D.MoveRotation
+
+        // Add torque
+        // weaponRb.AddTorque(rotateSpeed * Time.fixedDeltaTime * 1000);
         weaponRb.MoveRotation(newAngle);
     }
 
@@ -154,7 +158,6 @@ public class PlayerAttack : MonoBehaviour
 
     private void OnAttack(InputAction.CallbackContext context)
     {
-        Debug.Log("OnAttack called");
         switch (attackType)
         {
             case AttackType.Pivot:
@@ -269,5 +272,10 @@ public class PlayerAttack : MonoBehaviour
         weaponRb.MoveRotation(startAngle);
 
         isSwinging = false;
+    }
+
+    public void SetWeapon(Weapon weapon)
+    {
+        weaponRb = weapon.GetComponentInParent<Rigidbody2D>();
     }
 }

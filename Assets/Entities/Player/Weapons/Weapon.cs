@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -11,17 +10,11 @@ public class Weapon : MonoBehaviour
     private ParticleSystem hitParticles;
     public float damage = 1.0f;
     public float addedForce = 1.0f;
-    public Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
     public float startComboMultiplier = 1.0f;
     public float multiplierIncrease = 0.0f;
     public ComboMultiplierMode multiplierMode = ComboMultiplierMode.Additive;
     public float addedWackedTime = 0.0f;
-
-    private void Awake()
-    {
-        // Set the weapon's location to the offset
-        transform.localPosition = offset;
-    }
+    public Vector3 weaponOffset = new(0.0f, 0.0f, 0.0f);
 
     // Init
     public void Initialize(
@@ -41,6 +34,9 @@ public class Weapon : MonoBehaviour
 
         startComboMultiplier = playerStartComboMuliplier;
         multiplierIncrease += playerMultiplierIncrease;
+
+        // Move weapon to offset
+        transform.localPosition = weaponOffset;
     }
 
     public void PlayHitEffects()

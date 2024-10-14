@@ -11,8 +11,7 @@ public class PlayerController : MonoBehaviour
     public int MaxXP => 10;
 
     [Category("Linked Components")]
-    [SerializeField]
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
     [SerializeField]
     private Health health;
@@ -39,6 +38,10 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.RegisterPlayer(gameObject);
+        if (weaponSlot != null && weaponSlot.weapon != null)
+        {
+            AddWeapon(weaponSlot.weapon.gameObject);
+        }
     }
 
     // Cleanup
@@ -48,13 +51,12 @@ public class PlayerController : MonoBehaviour
         health.OnDeath -= OnDeath;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        if (IsDead)
+        if (IsDead && !movement.IsMovementBlocked)
         {
-            return;
+            movement.BlockMovement();
         }
-        movement.MovePlayer();
     }
 
     public void AddXP(int xp)
@@ -123,6 +125,8 @@ public class PlayerController : MonoBehaviour
             playerAttack.comboMultiplierMode,
             playerAttack.addedWackedTime
         );
+        playerAttack.SetWeapon(currentWeapon);
+        movement.SetWeapon(currentWeapon);
     }
 
     public void ResetPlayer()

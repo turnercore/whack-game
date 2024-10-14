@@ -119,6 +119,18 @@ public class Enemy : MonoBehaviour
             return;
         }
 
+        Debug.Log(
+            "Ouch, I got hit! Stats: "
+                + damage
+                + " damage, "
+                + direction
+                + " direction, "
+                + addedForce
+                + " force, "
+                + addedWackedTime
+                + " added wacked time"
+        );
+
         // Otherwise, handle the hit, update IsWacked, and start the coroutine
         Wacked(addedWackedTime);
         DamageHit = damage;
@@ -128,8 +140,9 @@ public class Enemy : MonoBehaviour
         // Handle the hit by doing the folkowing:
         // 1. Take damage
         health.TakeDamage(damage);
-        // 2. Add force to self in the direction of the hit
-        rb.AddForce(addedForce * direction, ForceMode2D.Impulse);
+        rb.velocity = Vector2.zero;
+        StartCoroutine(addForceDelayed(addedForce, direction));
+
         // 3. Play hit particles if they exist
         if (hitParticles != null && !IsDead)
         {
@@ -145,6 +158,13 @@ public class Enemy : MonoBehaviour
         enemyComboDetector.addedWackedTime = addedWackedTime;
     }
 
+    private IEnumerator addForceDelayed(float addedForce, Vector2 direction)
+    {
+        yield return new WaitForFixedUpdate();
+        // 2. Add force to self in the direction of the hit
+        rb.AddForce(addedForce * direction, ForceMode2D.Impulse);
+    }
+
     private void Wacked(float addedWackedTime = 0.0f)
     {
         IsWacked = true;
@@ -153,6 +173,7 @@ public class Enemy : MonoBehaviour
         {
             StartCoroutine(DisableBrainTemporarily());
         }
+
         // Unfreeze enemy rotation to give it a ragdoll effect
         enemyRotation.Enable();
         // Enable other enemy detection for combo hits

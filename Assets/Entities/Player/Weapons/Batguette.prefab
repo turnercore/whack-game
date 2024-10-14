@@ -4925,6 +4925,7 @@ GameObject:
   - component: {fileID: 2566815853551267142}
   - component: {fileID: 2663451949996202738}
   - component: {fileID: 2325620361248096305}
+  - component: {fileID: 2093756697126636729}
   - component: {fileID: 4045845205797329612}
   m_Layer: 3
   m_Name: Batguette
@@ -4982,7 +4983,7 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0000064358032, y: -0.012577014}
+  m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.7590775, y: 0.45819184}
   m_Direction: 1
 --- !u!114 &2325620361248096305
@@ -5005,8 +5006,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6f24cdca6b9956141baf9d82ce0b4eca, type: 3}
   hitParticles: {fileID: 8660106796160072391}
   damage: 2
-  addedForce: 50
-  offset: {x: 1.5, y: 0, z: 0}
+  addedForce: 100
+  startComboMultiplier: 1
+  multiplierIncrease: 0
+  multiplierMode: 0
+  addedWackedTime: 0
+  weaponOffset: {x: 1.5, y: 0, z: 0}
+--- !u!114 &2093756697126636729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5362099585450000946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c06a97cf83d520847a40197a8a400be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &4045845205797329612
 AudioSource:
   m_ObjectHideFlags: 0
