@@ -172,11 +172,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  speed: 2
+  speed: 4
   damage: 1
   wackedTime: 1
   IsWacked: 0
-  deathTimeout: 15
+  deathTimeout: 3
   rb: {fileID: 2906609188887552741}
   health: {fileID: 473495986041502760}
   brain: {fileID: 654577723970651042}

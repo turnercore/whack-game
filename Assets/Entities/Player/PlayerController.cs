@@ -127,4 +127,25 @@ public class PlayerController : MonoBehaviour
         Level = 1;
         health.ResetHealth();
     }
+
+    public void BlockMovement()
+    {
+        movement.BlockMovement();
+    }
+
+    public void UnblockMovement()
+    {
+        movement.UnblockMovement();
+    }
+
+    public void TeleportTo(Vector3 position)
+    {
+        gameObject.transform.position = position;
+        rb.position = position;
+    }
+
+    public Vector3 GetPosition()
+    {
+        return rb.position;
+    }
 }

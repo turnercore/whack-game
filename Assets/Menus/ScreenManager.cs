@@ -46,6 +46,9 @@ public class ScreenManager : MonoBehaviour
             return;
         }
 
+        // Make the player unables to move
+        GameManager.Instance.Player.GetComponent<PlayerController>().BlockMovement();
+
         menuScreenBarrier.gameObject.SetActive(false);
 
         // Set the transition screen
@@ -139,9 +142,13 @@ public class ScreenManager : MonoBehaviour
         // Move the player to the new screen's reference point if it exists
         if (TransitionScreenObject.playerReferencePoint != null)
         {
-            GameManager.Instance.Player.transform.position = TransitionScreenObject
-                .playerReferencePoint
-                .position;
+            Debug.Log(
+                "Moving player to new screen reference point at "
+                    + TransitionScreenObject.playerReferencePoint.position
+            );
+            GameManager
+                .Instance.Player.GetComponent<PlayerController>()
+                .TeleportTo(TransitionScreenObject.playerReferencePoint.position);
         }
 
         // Update the current screen
@@ -155,6 +162,9 @@ public class ScreenManager : MonoBehaviour
         {
             menuScreenBarrier.gameObject.SetActive(false);
         }
+
+        // Unrestrict Player Movement
+        GameManager.Instance.Player.GetComponent<PlayerController>().UnblockMovement();
     }
 }
 

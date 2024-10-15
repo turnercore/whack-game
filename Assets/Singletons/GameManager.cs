@@ -89,18 +89,14 @@ public class GameManager : MonoBehaviour
 
     void InitializeGame()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
         IsGamePaused = false;
         IsGameOver = false;
         IsGameWon = false;
         Kills = 0;
         Coins = 0;
         timeElapsed = 0f;
-
-        // Reset the player's position
-        Player.SetActive(true);
-        Player.transform.position = Vector3.zero;
-        Player.GetComponent<PlayerController>().ResetPlayer();
-
         // Change to the menu screen
         if (!IsTesting)
             screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);

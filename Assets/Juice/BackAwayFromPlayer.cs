@@ -5,7 +5,8 @@ public class BackAwayFromPlayer : Juice
     public float retreatForce = 200f; // Force to apply when retreating
     public float retreatDistance = 5f; // Maximum distance to retreat away from the player
 
-    private Transform playerTransform => GameManager.Instance.Player.transform;
+    private Vector3 playerLocation =>
+        GameManager.Instance.Player.GetComponent<PlayerController>().GetPosition();
     private Rigidbody2D rb;
     private bool isRetreating;
 
@@ -24,20 +25,19 @@ public class BackAwayFromPlayer : Juice
 
     void Update()
     {
-        if (isRetreating && playerTransform != null && rb != null)
+        // Retreat unless we're beyond the retreat distance
+        if (isRetreating)
         {
             // Calculate the direction away from the player
-            Vector3 directionAway = (transform.position - playerTransform.position).normalized;
+            Vector3 directionAway = (transform.position - playerLocation).normalized;
 
             // Apply force in the opposite direction of the player
-            if (Vector3.Distance(playerTransform.position, transform.position) <= retreatDistance)
+            if (Vector3.Distance(playerLocation, transform.position) <= retreatDistance)
             {
-                rb.AddForce(directionAway * retreatForce * Time.deltaTime, ForceMode2D.Force);
+                rb.AddForce(retreatForce * Time.deltaTime * directionAway, ForceMode2D.Force);
             }
             else
             {
-                // Stop retreating once the object is beyond the retreat distance
-                isRetreating = false;
                 rb.velocity = Vector2.zero; // Stop any movement
             }
         }
@@ -48,6 +48,7 @@ public class BackAwayFromPlayer : Juice
         // Check if the player has entered the trigger
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Player entered trigger");
             isRetreating = true;
         }
     }
@@ -58,7 +59,6 @@ public class BackAwayFromPlayer : Juice
         if (other.CompareTag("Player"))
         {
             isRetreating = false;
-            rb.velocity = Vector2.zero; // Stop any movement
         }
     }
 }

@@ -5,6 +5,20 @@ public class EventBus : MonoBehaviour
 {
     public static EventBus Instance { get; private set; }
 
+    private void Awake()
+    {
+        transform.SetParent(null);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Player events
     public event Action OnPlayerDied;
 
