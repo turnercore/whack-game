@@ -216,6 +216,7 @@ public class GameManager : MonoBehaviour
                 );
                 break;
             case ButtonTypes.Play:
+                timeElapsed = 0f;
                 screenManager.TransitionToScreen(ScreenType.Level, ScreenTransitionType.ZoomInOut);
                 break;
             case ButtonTypes.Options:
