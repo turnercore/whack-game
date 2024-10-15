@@ -55,6 +55,7 @@ public class WeaponImpactHandler : MonoBehaviour
             .Hit(
                 direction,
                 weapon.damage,
+                weapon.damage,
                 weapon.multiplierMode,
                 weapon.multiplierIncrease,
                 weapon.startComboMultiplier,

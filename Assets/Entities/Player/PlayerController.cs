@@ -25,6 +25,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private WeaponSlot weaponSlot;
 
+    [SerializeField]
+    private SpriteRenderer sprite;
+
+    [SerializeField]
+    private SpriteRenderer ghostSprite;
+
     private Weapon currentWeapon;
     #endregion
 
@@ -81,25 +87,11 @@ public class PlayerController : MonoBehaviour
         EventBus.Instance.TriggerLevelUp();
     }
 
-    // Detect collisions with Enemies
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            Enemy enemy = other.gameObject.GetComponent<Enemy>();
-            if (enemy.IsDead)
-            {
-                return;
-            }
-            float damage = enemy.damage;
-            health.TakeDamage(damage);
-        }
-    }
-
     private void OnDeath()
     {
-        // Unsubscribe from Health events
-        health.OnDeath -= OnDeath;
+        // Change the sprite to the ghost sprite
+        sprite.gameObject.SetActive(false);
+        ghostSprite.gameObject.SetActive(true);
         // Trigger the player died event
         EventBus.Instance.TriggerPlayerDied();
     }

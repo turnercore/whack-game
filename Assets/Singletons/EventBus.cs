@@ -3,20 +3,20 @@ using UnityEngine;
 
 public class EventBus : MonoBehaviour
 {
-    public static EventBus Instance { get; private set; }
-
-    private void Awake()
+    private static EventBus _instance;
+    public static EventBus Instance
     {
-        transform.SetParent(null);
-        if (Instance == null)
+        get
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (_instance == null)
+            {
+                GameObject eventBusObject = new("eventBusObject");
+                _instance = eventBusObject.AddComponent<EventBus>();
+                DontDestroyOnLoad(eventBusObject);
+            }
+            return _instance;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        private set { _instance = value; }
     }
 
     // Player events

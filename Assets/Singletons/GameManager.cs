@@ -4,7 +4,22 @@ using UnityEngine.SocialPlatforms.Impl;
 public class GameManager : MonoBehaviour
 {
     // The static instance of GameManager
-    public static GameManager Instance { get; private set; }
+
+    private static GameManager _instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                GameObject gameManagerObject = new("gameManagerObject");
+                _instance = gameManagerObject.AddComponent<GameManager>();
+                DontDestroyOnLoad(gameManagerObject);
+            }
+            return _instance;
+        }
+        private set { _instance = value; }
+    }
     public bool IsGamePaused { get; private set; }
     public bool IsGameOver { get; private set; }
     public bool IsGameWon { get; private set; }

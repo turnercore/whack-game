@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -22,6 +23,9 @@ public class Enemy : MonoBehaviour
     public Vector2 DirectionHit { get; private set; }
     public float AddedForceHit { get; private set; }
     public bool IsDead => health.IsDead;
+
+    [SerializeField]
+    private float deathTimeout = 15.0f;
 
     [Header("Linked Components")]
     public Rigidbody2D rb;
@@ -50,6 +54,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private Animator emoteAnimator;
 
+    [SerializeField]
+    private ComboIndicator comboIndicator;
+
+    [SerializeField]
+    private SpriteRenderer sprite;
+
+    [SerializeField]
+    private Animator animator;
+
     #endregion
 
     private void Awake()
@@ -62,10 +75,13 @@ public class Enemy : MonoBehaviour
         enemyRotation.Initialize(rb, this);
         // Disable rotation
         enemyRotation.Disable();
-        enemyComboDetector.enabled = false;
+        comboIndicator.gameObject.SetActive(false);
     }
 
-    void Start() { }
+    void Start()
+    {
+        comboIndicator.enabled = false;
+    }
 
     private void OnDestroy()
     {
@@ -99,10 +115,17 @@ public class Enemy : MonoBehaviour
         enemyRotation.Disable();
         // Fire enemy is dead event
         EventBus.Instance.TriggerEnemyDied(this);
+        // Set the trigger on the animator after time
+        Timercore
+            .CreateTimer()
+            .SetLength(deathTimeout)
+            .OnComplete(() => animator.SetTrigger("Die"))
+            .Start();
     }
 
     public void Hit(
         Vector2 direction,
+        float baseDamage,
         float damage,
         ComboMultiplierMode multiplierMode,
         float multiplierIncrease,
@@ -129,6 +152,11 @@ public class Enemy : MonoBehaviour
                 + " force, "
                 + addedWackedTime
                 + " added wacked time"
+                + " combo multiplier: "
+                + comboMultiplier
+                + " multiplier mode: "
+                + multiplierMode
+                + " multiplier increase: "
         );
 
         // Otherwise, handle the hit, update IsWacked, and start the coroutine
@@ -153,9 +181,19 @@ public class Enemy : MonoBehaviour
         enemyComboDetector.comboMultiplier = comboMultiplier;
         enemyComboDetector.multiplierMode = multiplierMode;
         enemyComboDetector.multiplierIncrease = multiplierIncrease;
-        enemyComboDetector.damage = damage;
+        enemyComboDetector.baseDamage = baseDamage;
         enemyComboDetector.force = addedForce;
         enemyComboDetector.addedWackedTime = addedWackedTime;
+
+        // Dispay the combo indicator if the mulitplier is morethan
+        DisplayComboIndicator(comboMultiplier);
+    }
+
+    private void DisplayComboIndicator(float comboMultiplier)
+    {
+        comboIndicator.enabled = true;
+        comboIndicator.comboNumber = comboMultiplier;
+        comboIndicator.gameObject.SetActive(true);
     }
 
     private IEnumerator addForceDelayed(float addedForce, Vector2 direction)
