@@ -21,7 +21,7 @@ MonoBehaviour:
     value: 3
   threshold:
     overrideState: 1
-    value: 0.98
+    value: 2
   softKnee:
     overrideState: 0
     value: 0.5
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6050e2d5de785ce4d931e4dbdbf2d755, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -69,7 +69,7 @@ MonoBehaviour:
     defaultState: 1
   intensity:
     overrideState: 1
-    value: 0.697
+    value: 0.413
   fastMode:
     overrideState: 0
     value: 0
@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d65e486e4de6e5448a8fbb43dc8756a0, type: 3}
   m_Name: Grain
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -94,7 +94,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.362
+    value: 0.101
   size:
     overrideState: 1
     value: 0.3
@@ -132,13 +132,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b77c5407dc277943b591ade9e6b18c5, type: 3}
   m_Name: LensDistortion
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
-    value: 0
+    value: 1
   intensity:
     overrideState: 1
-    value: -100
+    value: 7.3
   intensityX:
     overrideState: 0
     value: 0.844
@@ -152,7 +152,7 @@ MonoBehaviour:
     overrideState: 0
     value: 0
   scale:
-    overrideState: 1
+    overrideState: 0
     value: 4.25
 --- !u!114 &5869083720665334900
 MonoBehaviour:
@@ -178,8 +178,8 @@ MonoBehaviour:
     value: {fileID: 0}
     defaultState: 1
   tonemapper:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 2
   toneCurveToeStrength:
     overrideState: 0
     value: 0
@@ -206,11 +206,11 @@ MonoBehaviour:
     overrideState: 0
     value: 1
   temperature:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 3.6
   tint:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: -4.6
   colorFilter:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}
@@ -218,17 +218,17 @@ MonoBehaviour:
     overrideState: 0
     value: 0
   saturation:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 10.1
   brightness:
     overrideState: 0
     value: 0
   postExposure:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 0.34
   contrast:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 26.5
   mixerRedOutRedIn:
     overrideState: 0
     value: 100
@@ -1492,7 +1492,7 @@ MonoBehaviour:
     value: {x: 0.5, y: 0.5}
   intensity:
     overrideState: 1
-    value: 0.284
+    value: 0.188
   smoothness:
     overrideState: 0
     value: 0.2
