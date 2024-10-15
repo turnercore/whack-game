@@ -3,21 +3,7 @@ using UnityEngine;
 
 public class EventBus : MonoBehaviour
 {
-    private static EventBus _instance;
-    public static EventBus Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                GameObject eventBusObject = new("eventBusObject");
-                _instance = eventBusObject.AddComponent<EventBus>();
-                DontDestroyOnLoad(eventBusObject);
-            }
-            return _instance;
-        }
-        private set { _instance = value; }
-    }
+    public static EventBus Instance { get; private set; }
 
     // Player events
     public event Action OnPlayerDied;
