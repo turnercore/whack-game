@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floatSpeed: 5
+  pickupSound: {fileID: 8300000, guid: 2d16a6a38804e5c4197366d83d95807b, type: 3}
   value: 1
   health: 1
 --- !u!58 &5225820005706494927

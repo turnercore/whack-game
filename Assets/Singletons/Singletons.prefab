@@ -44,7 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 875315d54575bcb4c834ae3334d58f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerScore: 0
+  cursorSprite: {fileID: 2800000, guid: d42679354e7228540ad01793d80b6806, type: 3}
+  timeElapsed: 0
+  IsTesting: 0
+  _player: {fileID: 0}
+  screenManager: {fileID: 0}
+  highScore: {fileID: 11400000, guid: c6a60b6ac14bcbe4d866cac41efdc32e, type: 2}
 --- !u!1 &702075855722531637
 GameObject:
   m_ObjectHideFlags: 0

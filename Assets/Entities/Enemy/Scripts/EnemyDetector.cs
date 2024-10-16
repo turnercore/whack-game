@@ -33,6 +33,9 @@ public class EnemyDetector : MonoBehaviour
     [SerializeField]
     private float timeout = 1.0f;
 
+    [SerializeField]
+    private AudioSource audioSource;
+
     private void OnEnable()
     {
         // Ensure the polygon collider is enabled
@@ -92,6 +95,10 @@ public class EnemyDetector : MonoBehaviour
 
                 // Hit the other enemy, passing on the combo values
                 Vector2 contactNormal = (other.transform.position - transform.position).normalized;
+
+                //Play hit sound
+                audioSource.Play();
+
                 otherEnemy.Hit(
                     contactNormal,
                     baseDamage,

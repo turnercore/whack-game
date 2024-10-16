@@ -126,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
     private void StartDash()
     {
         isDashing = true;
-        Timercore.CreateTimer("DashTimer").SetLength(dashDuration).OnComplete(EndDash).Start();
+        Timercore.CreateTimer().SetLength(dashDuration).OnComplete(EndDash).Start();
     }
 
     private void EndDash()
@@ -135,11 +135,7 @@ public class PlayerMovement : MonoBehaviour
         health.IsInvincible = false;
         EventBus.Instance.TriggerPlayerDashEnd();
         isDashOnColldown = true;
-        Timercore
-            .CreateTimer("DashCooldown")
-            .SetLength(dashCooldown)
-            .OnComplete(() => isDashOnColldown = false)
-            .Start();
+        Timercore.CreateTimer().SetLength(dashCooldown).OnComplete(EndDashCooldown).Start();
     }
 
     public void BlockMovement()

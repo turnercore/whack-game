@@ -6,6 +6,17 @@ public class PlayerAttack : MonoBehaviour
     #region Variables
     public float rotateSpeed = 10f;
 
+    // private Weapon _weapon;
+    // private Weapon weapon
+    // {
+    //     get { return _weapon; }
+    //     set
+    //     {
+    //         _weapon = value;
+    //         weaponRb = _weapon.GetComponent<Rigidbody2D>();
+    //     }
+    // }
+
     [SerializeField]
     private WeaponSlot weaponSlot;
     private Transform weaponPivot;

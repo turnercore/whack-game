@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     const int SCORE_VALUE_LEVEL = 1000;
 
     // The static instance of GameManager
+    [SerializeField]
+    private Texture2D cursorSprite;
     public static GameManager Instance { get; private set; }
     public bool IsGamePaused { get; private set; }
     public bool IsGameOver { get; private set; }
@@ -107,7 +109,9 @@ public class GameManager : MonoBehaviour
 
     void InitializeGame()
     {
-        Cursor.visible = false;
+        // Set cursor sprite
+        Cursor.SetCursor(cursorSprite, Vector2.zero, CursorMode.Auto);
+        // Confine cursor to the game window
         Cursor.lockState = CursorLockMode.Confined;
         IsGamePaused = false;
         IsGameOver = false;
