@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f38af88724635374892e50e53d48435f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 10
+  _maxHealth: 5
   IsDead: 0
   IsInvincible: 0
   EyeAnimator: {fileID: 3366443519906710915}

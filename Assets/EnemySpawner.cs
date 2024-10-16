@@ -1,16 +1,31 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public class EnemyPrefab
+{
+    public GameObject enemy;
+    public float spawnChance;
+}
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject[] enemyPrefabs;
+    [SerializeField]
+    private List<EnemyPrefab> enemyPrefabs = new List<EnemyPrefab>();
+
+    [SerializeField]
     public float spawnRate = 1f;
     public int level = 1;
     public int maxEnemies = 100;
     public int enemiesSpawned = 0;
 
+    private List<GameObject> enemySpawnBag = new List<GameObject>();
+
     void Start()
     {
+        // Initialize the spawn bag
+        InitializeSpawnBag();
         // Subscribe to enemy died event
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
     }
@@ -18,7 +33,6 @@ public class EnemySpawner : MonoBehaviour
     void OnEnable()
     {
         StartCoroutine(SpawnEnemy());
-        // Subscribe to enemy died event
     }
 
     void OnDisable()
@@ -33,6 +47,19 @@ public class EnemySpawner : MonoBehaviour
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         // Stop spawning enemies
         StopAllCoroutines();
+    }
+
+    // Initialize the spawn bag based on enemy spawn chances
+    private void InitializeSpawnBag()
+    {
+        enemySpawnBag.Clear();
+        foreach (var entry in enemyPrefabs)
+        {
+            for (int i = 0; i < entry.spawnChance; i++)
+            {
+                enemySpawnBag.Add(entry.enemy);
+            }
+        }
     }
 
     // Spawn enemies at random points off screen
@@ -78,12 +105,17 @@ public class EnemySpawner : MonoBehaviour
                         break;
                 }
 
+                // Pick a prefab from the spawn bag
+                GameObject spawnedEnemy = GetEnemyFromSpawnBag();
+
+                if (spawnedEnemy == null)
+                {
+                    Debug.LogError("No enemy prefab found");
+                    continue;
+                }
+
                 // Spawn enemy at calculated position
-                GameObject enemy = Instantiate(
-                    enemyPrefabs[Random.Range(0, enemyPrefabs.Length)],
-                    spawnPosition,
-                    Quaternion.identity
-                );
+                GameObject enemy = Instantiate(spawnedEnemy, spawnPosition, Quaternion.identity);
                 // Make enemy a child of the spawner
                 enemy.transform.SetParent(transform);
                 // Increase enemies spawned
@@ -93,7 +125,23 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    // decrease enemies spawned when an enemy dies
+    // Get an enemy prefab from the spawn bag
+    GameObject GetEnemyFromSpawnBag()
+    {
+        if (enemySpawnBag.Count == 0)
+        {
+            // Refill the bag when empty
+            InitializeSpawnBag();
+        }
+
+        // Get a random enemy from the bag
+        int randomIndex = Random.Range(0, enemySpawnBag.Count);
+        GameObject chosenEnemy = enemySpawnBag[randomIndex];
+        enemySpawnBag.RemoveAt(randomIndex);
+        return chosenEnemy;
+    }
+
+    // Decrease enemies spawned when an enemy dies
     void OnEnemyDied(Enemy enemy)
     {
         enemiesSpawned--;

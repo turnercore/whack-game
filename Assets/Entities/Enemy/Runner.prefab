@@ -10,7 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2983412352072957593, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_Name
-      value: EnemyTemplate
+      value: Runner
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: score
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: speed
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: wackedTime
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7710635350375547992, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_LocalPosition.x

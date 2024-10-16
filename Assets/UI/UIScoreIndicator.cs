@@ -13,11 +13,20 @@ public class UIScoreIndicator : MonoBehaviour
 
     private void Awake()
     {
-        currentScore = GameManager.Instance.Score;
         TMPro = GetComponent<TMP_Text>();
         TMPro.text = currentScore.ToString();
         // Subscribe to Score Changed event
+    }
+
+    private void Start()
+    {
         EventBus.Instance.OnScoreChanged += UpdateScore;
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe from Score Changed event
+        EventBus.Instance.OnScoreChanged -= UpdateScore;
     }
 
     // Update is called once per frame

@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 473495986041502760, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: _maxHealth
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2906609188887552741, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: m_LinearDrag
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2983412352072957593, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_Name
       value: Catcher
@@ -55,6 +63,22 @@ PrefabInstance:
     - target: {fileID: 4998980068297249162, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: score
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: damage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5917141756552869409, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      propertyPath: wackedTime
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6840372561196077737, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_LocalScale.x
