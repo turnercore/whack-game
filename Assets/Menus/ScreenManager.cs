@@ -102,7 +102,8 @@ public class ScreenManager : MonoBehaviour
         ChangeScreen();
 
         // Snap the camera to the player
-        cameraController.SnapToPlayer();
+        Vector3 playerPosition = GameManager.Instance.Player.transform.position;
+        cameraController.SnapToPlayer(playerPosition);
 
         // Unsubscribe from the ZoomIn event
         EventBus.Instance.OnCameraZoomIn -= OnZoomInFinished;
@@ -124,8 +125,9 @@ public class ScreenManager : MonoBehaviour
         EventBus.Instance.OnCameraZoomOut -= OnZoomOutFinished;
 
         // If the current screen is a menu, activate the menu screen barrier
-        if (CurrentScreenObject.isMenuScreen)
-            menuScreenBarrier.gameObject.SetActive(true);
+        // if (CurrentScreenObject.isMenuScreen)
+        // menuScreenBarrier.gameObject.SetActive(true);
+        menuScreenBarrier.gameObject.SetActive(true);
     }
 
     private void ChangeScreen()

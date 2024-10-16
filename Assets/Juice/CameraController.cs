@@ -13,19 +13,10 @@ public class CameraController : MonoBehaviour
     private float shakeMagnitude = 0.5f;
 
     [SerializeField]
-    private float followSpeed = 5f;
-
-    [SerializeField]
-    private float deadzone = 0.5f;
-
-    [SerializeField]
     private float floatyAmount = 0.02f;
 
     [SerializeField]
     private float floatySpeed = 0.2f;
-
-    [SerializeField]
-    private Vector3 offset;
 
     [SerializeField]
     private float zoomTransitionTime = 5f;
@@ -36,16 +27,6 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float zoomedOutSize = 7.2f;
 
-    [SerializeField]
-    private float idleThreshold = 1f;
-
-    [SerializeField]
-    private float targetTransitionSpeed = 2f;
-
-    private Transform playerTransform => GameManager.Instance.GetPlayerObject().transform;
-    private float playerIdleTime = 0f;
-    private Vector3 lastPlayerPosition;
-    private bool isIdle = false;
     public bool isInMenu = false;
 
     private Coroutine transitionCoroutine;
@@ -56,68 +37,20 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        lastPlayerPosition = playerTransform.position;
         currentTarget = transform.position;
     }
 
     private void LateUpdate()
     {
-        if (!isFrozen && !isInMenu && playerTransform != null)
+        if (!isFrozen && !isInMenu)
         {
-            FollowPlayerWithDeadzone();
-            CheckPlayerIdle();
+            AddFloatyMovement();
         }
-    }
-
-    private void FollowPlayerWithDeadzone()
-    {
-        Vector3 playerPosition = playerTransform.position;
-        Vector3 camPosition = transform.position - offset;
-
-        float distanceX = Mathf.Abs(playerPosition.x - camPosition.x);
-        float distanceY = Mathf.Abs(playerPosition.y - camPosition.y);
-
-        if (distanceX > deadzone || distanceY > deadzone)
-        {
-            Vector3 targetPosition = Vector3.Lerp(
-                camPosition,
-                playerPosition,
-                followSpeed * Time.deltaTime
-            );
-            SetTarget(targetPosition + offset, zoomedOutSize, false);
-            playerIdleTime = 0f;
-            isIdle = false;
-        }
-    }
-
-    private void CheckPlayerIdle()
-    {
-        if (isFrozen)
-        {
-            return;
-        }
-
-        if (playerTransform.position == lastPlayerPosition)
-        {
-            playerIdleTime += Time.deltaTime;
-            if (playerIdleTime >= idleThreshold)
-            {
-                isIdle = true;
-                AddFloatyMovement();
-            }
-        }
-        else
-        {
-            playerIdleTime = 0f;
-            isIdle = false;
-        }
-
-        lastPlayerPosition = playerTransform.position;
     }
 
     private void AddFloatyMovement()
     {
-        if (isIdle && !isFrozen)
+        if (!isFrozen)
         {
             float floatyOffsetX = Mathf.Sin(Time.time * floatySpeed) * floatyAmount;
             float floatyOffsetY = Mathf.Cos(Time.time * floatySpeed) * floatyAmount;
@@ -226,12 +159,8 @@ public class CameraController : MonoBehaviour
         SetTarget(targetPosition, zoomedOutSize, false);
     }
 
-    public void SnapToPlayer()
+    public void SnapToPlayer(Vector3 playerPosition)
     {
-        transform.position = new Vector3(
-            playerTransform.position.x + offset.x,
-            playerTransform.position.y + offset.y,
-            -10
-        );
+        transform.position = new Vector3(playerPosition.x, playerPosition.y, -10);
     }
 }
