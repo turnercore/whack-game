@@ -174,6 +174,7 @@ MonoBehaviour:
   weight: 1
   speed: 4
   damage: 1
+  score: 1
   wackedTime: 1
   IsWacked: 0
   deathTimeout: 3
@@ -203,6 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 10
   IsDead: 0
+  IsInvincible: 0
   EyeAnimator: {fileID: 3366443519906710915}
 --- !u!114 &654577723970651042
 MonoBehaviour:
@@ -5572,10 +5574,10 @@ MonoBehaviour:
   force: 0
   addedWackedTime: 0
   multiplierMode: 0
-  pulseRadius: 20
-  pulseForce: 30
+  pulseRadius: 5
+  pulseForce: 10
   polygonCollider: {fileID: 5134545279541496679}
-  comboIndicator: {fileID: 0}
+  comboIndicator: {fileID: 8509351952468499197}
   timeout: 1
 --- !u!1001 &728684893703363101
 PrefabInstance:

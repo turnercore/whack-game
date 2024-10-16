@@ -117,8 +117,6 @@ public class PlayerController : MonoBehaviour
             playerAttack.comboMultiplierMode,
             playerAttack.addedWackedTime
         );
-        playerAttack.SetWeapon(currentWeapon);
-        movement.SetWeapon(currentWeapon);
     }
 
     public void ResetPlayer()

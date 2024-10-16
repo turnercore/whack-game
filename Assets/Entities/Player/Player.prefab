@@ -393,8 +393,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a52e656bb36f3b4bb9abde67a78b570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  moveSpeed: 5
+  dashSpeed: 15
+  dashDuration: 0.2
   rb: {fileID: 4168988682692927823}
+  weaponSlot: {fileID: 935783367428642416}
+  health: {fileID: 4737687776430889119}
 --- !u!114 &4414850056899218521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,8 +666,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f38af88724635374892e50e53d48435f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 2
+  _maxHealth: 20
   IsDead: 0
+  IsInvincible: 0
   EyeAnimator: {fileID: 8017052626302321498}
 --- !u!114 &7534247043661447563
 MonoBehaviour:
@@ -677,22 +682,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a13b4e16049e44f419d909e723b98b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSwingAngle: 90
-  minSwingAngle: -45
-  swingTime: 0.1
-  reloadTime: 0.3
   rotateSpeed: 15
-  weaponPivot: {fileID: 7413147845315022202}
-  attackType: 0
-  playerMovement: {fileID: 0}
-  ghostWeaponPivot: {fileID: 6999598054298927411}
-  ghostWeaponRb: {fileID: 503321850929510861}
-  startComboMultiplier: 1
-  comboMultiplierMode: 0
-  comboIncrease: 1
+  weaponSlot: {fileID: 935783367428642416}
   damage: 0
   force: 0
+  startComboMultiplier: 1
+  comboIncrease: 1
   addedWackedTime: 0
+  comboMultiplierMode: 0
 --- !u!1001 &2741188483210286302
 PrefabInstance:
   m_ObjectHideFlags: 0

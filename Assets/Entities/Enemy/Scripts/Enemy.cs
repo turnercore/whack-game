@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     private float weight = 1.0f;
     public float speed = 1.0f;
     public float damage = 1.0f;
+    public int score = 1;
 
     [SerializeField]
     private float wackedTime = 0.5f;
@@ -142,22 +143,24 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        Debug.Log(
-            "Ouch, I got hit! Stats: "
-                + damage
-                + " damage, "
-                + direction
-                + " direction, "
-                + addedForce
-                + " force, "
-                + addedWackedTime
-                + " added wacked time"
-                + " combo multiplier: "
-                + comboMultiplier
-                + " multiplier mode: "
-                + multiplierMode
-                + " multiplier increase: "
-        );
+        // Update hit event
+        EventBus.Instance.TriggerEnemyHit(damage);
+        // Debug.Log(
+        //     "Ouch, I got hit! Stats: "
+        //         + damage
+        //         + " damage, "
+        //         + direction
+        //         + " direction, "
+        //         + addedForce
+        //         + " force, "
+        //         + addedWackedTime
+        //         + " added wacked time"
+        //         + " combo multiplier: "
+        //         + comboMultiplier
+        //         + " multiplier mode: "
+        //         + multiplierMode
+        //         + " multiplier increase: "
+        // );
 
         // Otherwise, handle the hit, update IsWacked, and start the coroutine
         Wacked(addedWackedTime);

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class WeaponSlot : MonoBehaviour
@@ -15,6 +16,9 @@ public class WeaponSlot : MonoBehaviour
 
     // Weapon script
     public Weapon weapon;
+
+    // Event on weapon set
+    public event Action<Weapon> OnWeaponSet;
 
     public Weapon SetWeapon(GameObject weaponPrefab)
     {
@@ -35,6 +39,10 @@ public class WeaponSlot : MonoBehaviour
 
         // Set weapon to the Weapon component
         weapon = weaponObject.GetComponent<Weapon>();
+
+        // Trigger the event
+        Debug.Log("Weapon set: " + weapon.name);
+        OnWeaponSet?.Invoke(weapon);
 
         // Return the weapon
         return weapon;

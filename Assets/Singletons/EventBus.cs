@@ -29,6 +29,18 @@ public class EventBus : MonoBehaviour
     public void TriggerPlayerHit(float damage, Vector2 hitDirection) =>
         OnPlayerHit?.Invoke(damage, hitDirection);
 
+    public event Action OnPlayerDash;
+
+    public void TriggerPlayerDash() => OnPlayerDash?.Invoke();
+
+    public event Action OnPlayerDashEnd;
+
+    public void TriggerPlayerDashEnd() => OnPlayerDashEnd?.Invoke();
+
+    public event Action OnPlayerHealed;
+
+    public void TriggerPlayerHealed() => OnPlayerHealed?.Invoke();
+
     // Enemy events
     public event Action<Enemy> OnEnemyDied;
 
@@ -37,6 +49,10 @@ public class EventBus : MonoBehaviour
         OnEnemyDied?.Invoke(enemy);
         TriggerKillsTextUpdate();
     }
+
+    public event Action<float> OnEnemyHit;
+
+    public void TriggerEnemyHit(float damage) => OnEnemyHit?.Invoke(damage);
 
     // Game state events
     public event Action OnGameWon;
@@ -67,6 +83,10 @@ public class EventBus : MonoBehaviour
         OnLevelUp?.Invoke();
         TriggerXPChanged();
     }
+
+    public event Action<int> OnScoreChanged;
+
+    public void TriggerScoreChanged(int value) => OnScoreChanged?.Invoke(value);
 
     // Coin events
     public event Action<int> OnCoinCollected;

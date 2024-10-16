@@ -3,6 +3,11 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
+    const int SCORE_VALUE_TIME = 1;
+    const int SCORE_VALUE_DAMAGE = 10;
+    const int SCORE_VALUE_COIN = 100;
+    const int SCORE_VALUE_LEVEL = 1000;
+
     // The static instance of GameManager
     public static GameManager Instance { get; private set; }
     public bool IsGamePaused { get; private set; }
@@ -11,7 +16,16 @@ public class GameManager : MonoBehaviour
     public float timeElapsed = 0f;
     private int Kills = 0;
     private int Coins = 0;
-    public int Score => CalculateScore();
+    private int _score = 0;
+    public int Score
+    {
+        get { return _score; }
+        set
+        {
+            _score = value;
+            EventBus.Instance.TriggerScoreChanged(_score);
+        }
+    }
 
     [SerializeField]
     private bool IsTesting = false;
@@ -84,6 +98,10 @@ public class GameManager : MonoBehaviour
         // Buttons event subscription
         EventBus.Instance.OnButtonWacked += OnButtonWacked;
 
+        // Scoring Event, did damage
+        EventBus.Instance.OnEnemyHit += UpdateScoreDidDamge;
+        EventBus.Instance.OnLevelUp += UpdateScoreLevelUp;
+
         InitializeGame();
     }
 
@@ -102,18 +120,6 @@ public class GameManager : MonoBehaviour
             screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
     }
 
-    int CalculateScore()
-    {
-        /*
-        * The score is calculated based on the following formula:
-        * Level * 1000
-        * Kills x 100
-        * Coins x 50
-        * Time Alive * 10
-        */
-        return Kills * 100 + Coins * 50 + (int)timeElapsed * 10 + GetPlayerComponent().Level * 1000;
-    }
-
     // Clean up
     private void OnDestroy()
     {
@@ -130,6 +136,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void UpdateScoreEnemyDied(Enemy enemy)
+    {
+        Score += enemy.score;
+    }
+
+    private void UpdateScoreDidDamge(float damage)
+    {
+        // Round down to the nearest integer
+        Score += (int)damage * SCORE_VALUE_DAMAGE;
+    }
+
+    private void UpdateScoreCoinCollected(int value)
+    {
+        Score += value * SCORE_VALUE_COIN;
+    }
+
+    private void UpdateScoreTimeSurvived() => Score += (int)timeElapsed * SCORE_VALUE_TIME;
+
+    private void UpdateScoreLevelUp() => Score += SCORE_VALUE_LEVEL;
+
     public int GetKills()
     {
         return Kills;
@@ -143,11 +169,13 @@ public class GameManager : MonoBehaviour
     void OnCoinCollected(int value)
     {
         Coins += value;
+        UpdateScoreCoinCollected(value);
     }
 
     void OnEnemyDied(Enemy enemy)
     {
         Kills++;
+        UpdateScoreEnemyDied(enemy);
     }
 
     public void RegisterPlayer(GameObject player)
@@ -178,6 +206,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         IsGameOver = true;
+        UpdateScoreTimeSurvived();
         UpdateHighScore(Score, PlayerName);
         OnGameOver?.Invoke();
     }

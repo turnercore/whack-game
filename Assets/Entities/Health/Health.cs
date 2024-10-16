@@ -29,6 +29,7 @@ public class Health : MonoBehaviour
     public event DeathDelegate OnDeath;
     public delegate void OnTakeDamageDelegate(float damage);
     public event OnTakeDamageDelegate OnTakeDamage;
+    public bool IsInvincible = false;
 
     [SerializeField]
     private Animator EyeAnimator;
@@ -41,7 +42,7 @@ public class Health : MonoBehaviour
     // Call this function to take damage
     public void TakeDamage(float damage)
     {
-        if (damage <= 0 || IsDead)
+        if (damage <= 0 || IsDead || IsInvincible)
         {
             return;
         }
@@ -64,6 +65,8 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
+        if (IsDead || IsInvincible)
+            return;
         IsDead = true;
         // Trigger the death event for anything that is subscribed
         // to the OnDeath event
