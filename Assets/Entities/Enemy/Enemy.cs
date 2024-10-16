@@ -127,11 +127,16 @@ public class Enemy : MonoBehaviour
         // Fire enemy is dead event
         EventBus.Instance.TriggerEnemyDied(this);
         // Set the trigger on the animator after time
-        Timercore
-            .CreateTimer()
-            .SetLength(deathTimeout)
-            .OnComplete(() => animator.SetTrigger("Die"))
-            .Start();
+        Timercore.CreateTimer().SetLength(deathTimeout).OnComplete(OnDeathTimeout).Start();
+    }
+
+    private void OnDeathTimeout()
+    {
+        // If the game object still exists
+        if (animator != null)
+            return;
+        else
+            animator.SetTrigger("Die");
     }
 
     public void Hit(

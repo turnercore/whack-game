@@ -59,7 +59,6 @@ public class Pickup : MonoBehaviour
     protected virtual void Start()
     {
         // Subscribe to EventBus audio sfx event played
-        Debug.Log("Subscribing to EventBus audio sfx event played");
         EventBus.Instance.OnGameOver += OnGameOver;
     }
 
@@ -73,7 +72,6 @@ public class Pickup : MonoBehaviour
     // OnGameOver
     protected void OnGameOver()
     {
-        Debug.Log("Pickup OnGameOver" + gameObject.GetInstanceID());
         Destroy(gameObject);
     }
 }

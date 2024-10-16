@@ -38,6 +38,11 @@ public class EnemySpawner : MonoBehaviour
     void OnDisable()
     {
         StopAllCoroutines();
+        // kill all children and stop their coroutines
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     // Clean up
@@ -47,6 +52,10 @@ public class EnemySpawner : MonoBehaviour
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         // Stop spawning enemies
         StopAllCoroutines();
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     // Initialize the spawn bag based on enemy spawn chances
