@@ -71,6 +71,22 @@ public class EventBus : MonoBehaviour
 
     public void TriggerGameResumed() => OnGameResumed?.Invoke();
 
+    public event Action<GameObject> OnPlayerSet;
+
+    public void TriggerPlayerSet(GameObject player) => OnPlayerSet?.Invoke(player);
+
+    public event Action OnGameStarted;
+
+    public void TriggerGameStarted() => OnGameStarted?.Invoke();
+
+    public event Action OnGameRestarted;
+
+    public void TriggerGameRestarted() => OnGameRestarted?.Invoke();
+
+    public event Action OnGameQuit;
+
+    public void TriggerGameQuit() => OnGameQuit?.Invoke();
+
     // XP and level events
     public event Action OnXPChanged;
 

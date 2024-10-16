@@ -82,6 +82,15 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         comboIndicator.enabled = false;
+
+        // Subscribe to game over event
+        EventBus.Instance.OnGameOver += OnGameOver;
+    }
+
+    private void OnGameOver()
+    {
+        // Destory this
+        Destroy(gameObject, 0.5f);
     }
 
     private void OnDestroy()
@@ -89,6 +98,7 @@ public class Enemy : MonoBehaviour
         // Unsubscribe from events
         health.OnDeath -= Die;
         offScreenChecker.OnScreenStatusChanged -= OnScreenStatusChanged;
+        EventBus.Instance.OnGameOver -= OnGameOver;
     }
 
     private void OnScreenStatusChanged(bool isOffScreen)

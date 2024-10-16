@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
         // Subscribe to EventBus OnEnenmyDied event
         EventBus.Instance.OnEnemyDied += OnEnemyDied;
         EventBus.Instance.OnCoinCollected += OnCoinCollected;
-        EventBus.Instance.OnPlayerDied += GameOver;
+        EventBus.Instance.OnPlayerDied += OnPlayerDied;
 
         // Buttons event subscription
         EventBus.Instance.OnButtonWacked += OnButtonWacked;
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
     {
         EventBus.Instance.OnEnemyDied -= OnEnemyDied;
         EventBus.Instance.OnCoinCollected -= OnCoinCollected;
-        EventBus.Instance.OnPlayerDied -= GameOver;
+        EventBus.Instance.OnPlayerDied -= OnPlayerDied;
     }
 
     private void Update()
@@ -186,7 +186,7 @@ public class GameManager : MonoBehaviour
     {
         // Register the player with the GameManager
         Player = player;
-        OnPlayerSet?.Invoke(player);
+        EventBus.Instance.TriggerPlayerSet(player);
     }
 
     public GameObject GetPlayerObject()
@@ -199,20 +199,12 @@ public class GameManager : MonoBehaviour
         return Player.GetComponent<PlayerController>();
     }
 
-    // OnPlayerSet Event
-    public delegate void PlayerSetDelegate(GameObject player);
-    public event PlayerSetDelegate OnPlayerSet;
-
-    // Game over event
-    public delegate void GameOverDelegate();
-    public event GameOverDelegate OnGameOver;
-
-    public void GameOver()
+    public void OnPlayerDied()
     {
         IsGameOver = true;
         UpdateScoreTimeSurvived();
-        UpdateHighScore(Score, PlayerName);
-        OnGameOver?.Invoke();
+        screenManager.TransitionToScreen(ScreenType.GameOver, ScreenTransitionType.ZoomInOut);
+        EventBus.Instance.TriggerGameOver();
     }
 
     private void UpdateHighScore(int score, string name)

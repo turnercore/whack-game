@@ -1,29 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class HighScoreUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text scoreText;
-    void Start()
-    {
-        scoreText.text = "";
-        // Subscribe to Game Over Event
-        GameManager.Instance.OnGameOver += DisplayScores;
+    [SerializeField]
+    private TMP_Text highScoreText;
 
+    [SerializeField]
+    private TMP_Text yourScoreText;
+
+    void OnEnable()
+    {
+        DisplayScores();
     }
 
-    // Clean up
-    private void OnDestroy()
+    void DisplayScores()
     {
-        GameManager.Instance.OnGameOver -= DisplayScores;
-    }
-
-    void DisplayScores() {
         string highScore = GameManager.Instance.GetHighScore().ToString();
         string playerScore = GameManager.Instance.Score.ToString();
-        Debug.Log($"High Score: {highScore}\nYour Score: {playerScore}");
-        scoreText.text = $"High Score: {highScore}\nYour Score: {playerScore}";
+        highScoreText.text = $"High Score: {highScore}";
+        yourScoreText.text = $"Your Score: {playerScore}";
     }
 }

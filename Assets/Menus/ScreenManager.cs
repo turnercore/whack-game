@@ -177,6 +177,7 @@ public enum ScreenType
     Credits,
     Pause,
     Level,
+    GameOver,
 }
 
 public enum ScreenTransitionType

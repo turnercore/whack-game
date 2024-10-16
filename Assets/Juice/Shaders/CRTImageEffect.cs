@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
 public class CRTImageEffect : MonoBehaviour
 {

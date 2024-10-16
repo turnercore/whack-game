@@ -54,4 +54,26 @@ public class Pickup : MonoBehaviour
             EventBus.Instance.TriggerAudioSFXPlayed(pickupSound, gameObject.GetInstanceID());
         }
     }
+
+    // Start
+    protected virtual void Start()
+    {
+        // Subscribe to EventBus audio sfx event played
+        Debug.Log("Subscribing to EventBus audio sfx event played");
+        EventBus.Instance.OnGameOver += OnGameOver;
+    }
+
+    // OnDestroy
+    protected virtual void OnDestroy()
+    {
+        // Unsubscribe from EventBus audio sfx event played
+        EventBus.Instance.OnGameOver -= OnGameOver;
+    }
+
+    // OnGameOver
+    protected void OnGameOver()
+    {
+        Debug.Log("Pickup OnGameOver" + gameObject.GetInstanceID());
+        Destroy(gameObject);
+    }
 }

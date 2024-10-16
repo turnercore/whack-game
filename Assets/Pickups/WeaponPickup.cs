@@ -10,8 +10,9 @@ public class WeaponPickup : Pickup
     private SpriteRenderer sprite;
 
     // On start set sprite to the weapon prefabs sprite
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         sprite.sprite = weapon.GetComponentInChildren<SpriteRenderer>().sprite;
         sprite.transform.localScale = weapon
             .GetComponentInChildren<SpriteRenderer>()
