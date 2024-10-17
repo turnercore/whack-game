@@ -239,6 +239,11 @@ public static class Timercore
         }
     }
 
+    public static void RemoveAllTimers()
+    {
+        timers.Clear();
+    }
+
     public static void RemoveTimer(Timer timer)
     {
         string key = null;
@@ -253,6 +258,14 @@ public static class Timercore
         if (key != null)
         {
             timers.Remove(key);
+        }
+    }
+
+    public static void StopAllTimers()
+    {
+        foreach (var kvp in timers)
+        {
+            kvp.Value.Stop();
         }
     }
 }

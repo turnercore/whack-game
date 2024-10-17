@@ -4,7 +4,6 @@ public class EnemyBrainPatrol : EnemyBrain
 {
     public Vector2[] patrolPoints; // Points for patrolling
     public float waypointTolerance = 0.2f; // Distance to consider reached
-
     private int currentWaypoint = 0;
 
     protected override void Start()

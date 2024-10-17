@@ -46,6 +46,9 @@ public class ScreenManager : MonoBehaviour
             return;
         }
 
+        // IMPORTANT: Stop all timers, this makes sure that we don't reference any callbacks that no longer exist
+        TimerManager.Instance.StopAllTimers();
+
         // Make the player unables to move
         GameManager.Instance.Player.GetComponent<PlayerController>().BlockMovement();
 

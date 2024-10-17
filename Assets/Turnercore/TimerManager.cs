@@ -24,4 +24,10 @@ public class TimerManager : MonoBehaviour
     {
         Timercore.RemoveTimer(timer);
     }
+
+    public void StopAllTimers()
+    {
+        Timercore.StopAllTimers();
+        Timercore.RemoveAllTimers();
+    }
 }

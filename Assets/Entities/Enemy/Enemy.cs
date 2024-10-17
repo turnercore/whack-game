@@ -132,11 +132,7 @@ public class Enemy : MonoBehaviour
 
     private void OnDeathTimeout()
     {
-        // If the game object still exists
-        if (animator != null)
-            return;
-        else
-            animator.SetTrigger("Die");
+        animator.SetTrigger("Die");
     }
 
     public void Hit(

@@ -18,15 +18,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4998980068297249162, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.15
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 4998980068297249162, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.15
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 4998980068297249162, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.15
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 4998980068297249162, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -116,7 +116,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2983412352072957593, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
       insertIndex: 4
       addedObject: {fileID: 8731278232216912276}
+    - targetCorrespondingSourceObject: {fileID: 2983412352072957593, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 891148145347436086}
   m_SourcePrefab: {fileID: 100100000, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+--- !u!50 &4052698254877752344 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 2906609188887552741, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+  m_PrefabInstance: {fileID: 1182276538697129725}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4111645195303395428 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2983412352072957593, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
@@ -136,3 +144,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patrolPoints: []
   waypointTolerance: 0.2
+--- !u!114 &891148145347436086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4111645195303395428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 024da32e433e96a468d792291f84badf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8097771569188027718}
+  rb: {fileID: 4052698254877752344}
+--- !u!212 &8097771569188027718 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6920161713323484091, guid: 0bddebc2cfde0ad4596689f159a1c004, type: 3}
+  m_PrefabInstance: {fileID: 1182276538697129725}
+  m_PrefabAsset: {fileID: 0}
