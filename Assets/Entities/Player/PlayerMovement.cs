@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
         Timercore.CreateTimer().SetLength(dashDuration).OnComplete(EndDash).Start();
     }
 
-    private void EndDash()
+    public void EndDash()
     {
         isDashing = false;
         health.IsInvincible = false;
@@ -146,6 +146,11 @@ public class PlayerMovement : MonoBehaviour
     public void UnblockMovement()
     {
         isMovementBlocked = false;
+    }
+
+    public void StopMoving()
+    {
+        rb.velocity = Vector2.zero;
     }
 
     public void SetWeapon(Weapon weapon)

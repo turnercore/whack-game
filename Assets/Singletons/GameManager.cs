@@ -1,3 +1,4 @@
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviour
         IsGameWon = false;
         Kills = 0;
         Coins = 0;
+        Score = 0;
         timeElapsed = 0f;
         // Change to the menu screen
         if (!IsTesting)
@@ -272,7 +274,12 @@ public class GameManager : MonoBehaviour
         IsGameOver = false;
         IsGameWon = false;
         InitializeGame();
-        EventBus.Instance.TriggerGameResumed();
+
+        // Reset the player
+        Player.GetComponent<PlayerController>().ResetPlayer();
+        EventBus.Instance.TriggerScoreChanged(Score);
+
+        EventBus.Instance.TriggerGameRestarted();
     }
 
     public void QuitGame()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,6 +36,17 @@ public class ScreenManager : MonoBehaviour
         TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
     }
 
+    public void TransitionToCredits()
+    {
+        TransitionToScreen(ScreenType.Credits, ScreenTransitionType.ZoomInOut);
+    }
+
+    public void TransitionToMainMenu()
+    {
+        TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
+        GameManager.Instance.RestartGame();
+    }
+
     public void TransitionToScreen(
         ScreenType newScreen,
         ScreenTransitionType transitionType = ScreenTransitionType.ZoomInOut
@@ -49,8 +61,13 @@ public class ScreenManager : MonoBehaviour
         // IMPORTANT: Stop all timers, this makes sure that we don't reference any callbacks that no longer exist
         TimerManager.Instance.StopAllTimers();
 
+        // Make the player stop dashing if dashing
+        GameManager.Instance.Player.GetComponent<PlayerController>().StopDash();
+
         // Make the player unables to move
         GameManager.Instance.Player.GetComponent<PlayerController>().BlockMovement();
+        // Make player stationary
+        GameManager.Instance.Player.GetComponent<PlayerController>().StopMoving();
 
         menuScreenBarrier.gameObject.SetActive(false);
 

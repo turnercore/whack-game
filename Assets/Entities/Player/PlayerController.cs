@@ -13,8 +13,7 @@ public class PlayerController : MonoBehaviour
     [Category("Linked Components")]
     public Rigidbody2D rb;
 
-    [SerializeField]
-    private Health health;
+    public Health health;
 
     [SerializeField]
     private PlayerMovement movement;
@@ -32,6 +31,15 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer ghostSprite;
 
     private Weapon currentWeapon;
+
+    [SerializeField]
+    private Animator animator;
+
+    [SerializeField]
+    private AudioClip[] hurtSounds;
+
+    [SerializeField]
+    private AudioSource audioSource;
     #endregion
 
     private void Awake()
@@ -39,6 +47,16 @@ public class PlayerController : MonoBehaviour
         XP = 0;
         Level = 1;
         health.OnDeath += OnDeath;
+        health.OnHurt += OnHurt;
+    }
+
+    private void OnHurt()
+    {
+        // Trigger hurt animation
+        animator.SetTrigger("Hurt");
+        // Trigger a random hurt sound if the audio source is not null
+        if (audioSource != null && hurtSounds.Length > 0)
+            audioSource.PlayOneShot(hurtSounds[UnityEngine.Random.Range(0, hurtSounds.Length)]);
     }
 
     private void Start()
@@ -124,6 +142,7 @@ public class PlayerController : MonoBehaviour
         XP = 0;
         Level = 1;
         health.ResetHealth();
+        Revive();
     }
 
     public void BlockMovement()
@@ -136,6 +155,11 @@ public class PlayerController : MonoBehaviour
         movement.UnblockMovement();
     }
 
+    public void StopMoving()
+    {
+        movement.StopMoving();
+    }
+
     public void TeleportTo(Vector3 position)
     {
         gameObject.transform.position = position;
@@ -145,5 +169,17 @@ public class PlayerController : MonoBehaviour
     public Vector3 GetPosition()
     {
         return rb.position;
+    }
+
+    public void Revive()
+    {
+        health.Revive();
+        sprite.gameObject.SetActive(true);
+        ghostSprite.gameObject.SetActive(false);
+    }
+
+    public void StopDash()
+    {
+        movement.EndDash();
     }
 }
