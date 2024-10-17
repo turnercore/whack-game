@@ -182,4 +182,9 @@ public class PlayerController : MonoBehaviour
     {
         movement.EndDash();
     }
+
+    public bool HasWeapon()
+    {
+        return currentWeapon != null;
+    }
 }

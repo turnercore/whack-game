@@ -30,15 +30,10 @@ public class CameraController : MonoBehaviour
     public bool isInMenu = false;
 
     private Coroutine transitionCoroutine;
-    private Vector3 currentTarget;
+    private Vector3 currentTarget = new(4f, 3.70000005f, 0f);
     private float zoomElapsedTime = 0f;
     public Vector3 menuPosition = new(0, 0, -10);
     public float menuZoom = 7.2f;
-
-    private void Start()
-    {
-        currentTarget = transform.position;
-    }
 
     private void LateUpdate()
     {
@@ -104,7 +99,8 @@ public class CameraController : MonoBehaviour
 
     public void SetTarget(Vector3 targetPosition, float targetZoom, bool isZoomIn)
     {
-        targetPosition.z = -10; // Ensure the z-axis is always -10
+        // Transitioning to target
+        targetPosition.z = -10;
         if (transitionCoroutine != null)
         {
             StopCoroutine(transitionCoroutine);

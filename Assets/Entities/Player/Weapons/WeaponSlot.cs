@@ -41,7 +41,6 @@ public class WeaponSlot : MonoBehaviour
         weapon = weaponObject.GetComponent<Weapon>();
 
         // Trigger the event
-        Debug.Log("Weapon set: " + weapon.name);
         OnWeaponSet?.Invoke(weapon);
 
         // Return the weapon

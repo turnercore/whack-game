@@ -1,6 +1,4 @@
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +10,9 @@ public class GameManager : MonoBehaviour
     // The static instance of GameManager
     [SerializeField]
     private Texture2D cursorSprite;
+
+    [SerializeField]
+    private CameraController cameraContoller;
     public static GameManager Instance { get; private set; }
     public bool IsGamePaused { get; private set; }
     public bool IsGameOver { get; private set; }
@@ -123,7 +124,9 @@ public class GameManager : MonoBehaviour
         timeElapsed = 0f;
         // Change to the menu screen
         if (!IsTesting)
+        {
             screenManager.TransitionToScreen(ScreenType.MainMenu, ScreenTransitionType.ZoomInOut);
+        }
     }
 
     // Clean up

@@ -101,6 +101,7 @@ public class ScreenManager : MonoBehaviour
         if (newScreen == ScreenType.Level)
         {
             // If transitioning to the game level, zoom in on the player's current position
+            cameraController.SnapToPlayer(GameManager.Instance.Player.transform.position);
             cameraController.ZoomIn(GameManager.Instance.Player.transform.position);
         }
         else
@@ -164,10 +165,6 @@ public class ScreenManager : MonoBehaviour
         // Move the player to the new screen's reference point if it exists
         if (TransitionScreenObject.playerReferencePoint != null)
         {
-            Debug.Log(
-                "Moving player to new screen reference point at "
-                    + TransitionScreenObject.playerReferencePoint.position
-            );
             GameManager
                 .Instance.Player.GetComponent<PlayerController>()
                 .TeleportTo(TransitionScreenObject.playerReferencePoint.position);
